@@ -18,8 +18,9 @@ public class GenerateTypes extends AbstractCodeFunction {
 	public Object visit(TypesSection typesSection, Object param) {
 
 		// generateStruct(typesSection.structDeclarations());
-
-		out("<instruction>");
+		for (StructDeclaration sd : typesSection.getStructDeclarations()) {
+			generateStruct(sd);
+		}
 
 		return null;
 	}

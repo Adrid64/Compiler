@@ -17,11 +17,11 @@ public class GenerateProgram extends AbstractCodeFunction {
 	@Override
 	public Object visit(Program program, Object param) {
 
-		// generateClass(program.getClassDeclaration());
+		 generateClass(program.getClassDeclaration());
 
-		// execute(program.getRunStatement());
+		 execute(program.getRunStatement());
 
-		out("<instruction>");
+		out("halt");
 
 		return null;
 	}

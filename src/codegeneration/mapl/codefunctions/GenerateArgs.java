@@ -3,6 +3,7 @@
 package codegeneration.mapl.codefunctions;
 
 import ast.*;
+import ast.declaration.Arg;
 import codegeneration.mapl.*;
 
 
@@ -14,14 +15,12 @@ public class GenerateArgs extends AbstractCodeFunction {
 
 
 	// class Args(List<Arg> args)
-	@Override
-	public Object visit(Args args, Object param) {
-
-		// declare(args.args());
-
-		out("<instruction>");
-
-		return null;
-	}
+    @Override
+    public Object visit(Args args, Object param) {
+        for (Arg arg : args.getArgs()) {
+            out("#PARAM " + arg.getName() + " : " + arg.getType().getTypeName());
+        }
+        return null;
+    }
 
 }

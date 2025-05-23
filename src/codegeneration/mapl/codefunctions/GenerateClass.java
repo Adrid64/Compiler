@@ -1,10 +1,7 @@
-// Generated with VGen 2.0.0
-
 package codegeneration.mapl.codefunctions;
 
 import ast.*;
 import codegeneration.mapl.*;
-
 
 public class GenerateClass extends AbstractCodeFunction {
 
@@ -12,20 +9,20 @@ public class GenerateClass extends AbstractCodeFunction {
         super(specification);
     }
 
+    // class ClassDeclaration(String name, Optional<GlobalSection> globalSection, CreateSection createSection, List<FeatureSection> featureSections)
+    @Override
+    public Object visit(ClassDeclaration classDeclaration, Object param) {
+        // Procesar globalSection si está presente
+        if (classDeclaration.getGlobalSection().isPresent()) {
+            generateGlobals(classDeclaration.getGlobalSection().get());
+        }
 
-	// class ClassDeclaration(String name, Optional<GlobalSection> globalSection, CreateSection createSection, List<FeatureSection> featureSections)
-	@Override
-	public Object visit(ClassDeclaration classDeclaration, Object param) {
+        // Procesar cada featureSection
+        for (FeatureSection featureSection : classDeclaration.getFeatureSections()) {
+            generateFunction(featureSection);
+        }
 
-		// generateGlobals(classDeclaration.getGlobalSection());
-
-		// generateConstructors(classDeclaration.getCreateSection());
-
-		// generateFunction(classDeclaration.featureSections());
-
-		out("<instruction>");
-
-		return null;
-	}
-
+        // Nota: createSection no genera código según la especificación
+        return null;
+    }
 }

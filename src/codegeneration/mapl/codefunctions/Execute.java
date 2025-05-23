@@ -46,8 +46,8 @@ public class Execute extends AbstractCodeFunction {
             value(expr);                  // Evaluar cada expresión
             out("out", expr.getType());   // Imprimir según el tipo
         }
-        out("pushb", "'\\n'");            // Colocar '\n' en la pila
-        out("out", new CharacterType());  // Imprimir salto de línea
+        out("pushb '\\n'");               // Colocar '\n' en la pila
+        out("out", new CharacterType("")); // Imprimir salto de línea
         return null;
     }
 
@@ -113,10 +113,10 @@ public class Execute extends AbstractCodeFunction {
         if (returnValue.getExpression() != null) {
             value(returnValue.getExpression()); // Evaluar el valor de retorno
         }
-        // Calcular tamaños para la instrucción ret
-        int returnSize = feature.getType() != null ? feature.getType().getSize() : 0;
-        int localsSize = feature.getLocalSection() != null ? calculateLocalsSize(feature.getLocalSection()) : 0;
-        int paramsSize = feature.getArgs() != null ? calculateParamsSize(feature.getArgs()) : 0;
+        // Calcular tamaños para la instrucción ret, manejando parámetros opcionales
+        int returnSize = feature.getType().isPresent() ? feature.getType().get().getSize() : 0;
+        int localsSize = feature.getLocalSection().isPresent() ? calculateLocalsSize(feature.getLocalSection().get()) : 0;
+        int paramsSize = feature.getArgs().isPresent() ? calculateParamsSize(feature.getArgs().get()) : 0;
         out("ret " + returnSize + ", " + localsSize + ", " + paramsSize); // Retornar
         return null;
     }
@@ -145,8 +145,8 @@ public class Execute extends AbstractCodeFunction {
 
     // Método auxiliar para directivas de línea
     private void line(AST node) {
-        if (node.getEnd() != null) {
-            out("\n#line " + node.getEnd().getLine());
+        if (node.end() != null) {
+            out("\n#line " + node.end().getLine());
         }
     }
 
@@ -167,20 +167,26 @@ public class Execute extends AbstractCodeFunction {
         }
         return size;
     }
-    
+
+    // Método auxiliar para emitir instrucción con sufijo según el tipo
     private void out(String instruction, Type type) {
         out(instruction + suffixFor(type));
     }
 
+    // Método auxiliar para emitir instrucción simple
+    @Override
+    protected void out(String instruction) {
+        super.out(instruction);
+    }
+
+    // Método auxiliar para determinar el sufijo del tipo
     private String suffixFor(Type type) {
         if (type instanceof IntType)
             return "i";
         if (type instanceof DoubleType)
             return "f";
-
-
-        // Sealed classes + pattern matching would avoid this situation. Those features were not
-        // finished when this code was implemented
+        if (type instanceof CharacterType)
+            return "b";
         throw new IllegalArgumentException("Unknown Type: " + type);
     }
 }

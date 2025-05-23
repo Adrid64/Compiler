@@ -1,10 +1,7 @@
-// Generated with VGen 2.0.0
-
 package codegeneration.mapl.codefunctions;
 
 import ast.declaration.*;
 import codegeneration.mapl.*;
-
 
 public class Declare extends AbstractCodeFunction {
 
@@ -12,42 +9,32 @@ public class Declare extends AbstractCodeFunction {
         super(specification);
     }
 
+    // class VariableDeclaration(List<String> identifiers, Type type)
+    // phase MemoryAllocation { int address }
+    @Override
+    public Object visit(VariableDeclaration variableDeclaration, Object param) {
+        String scope = variableDeclaration.getScope();
+        String directive = scope.equals("global") ? "#GLOBAL" : "#LOCAL";
+        for (String identifier : variableDeclaration.getIdentifiers()) {
+            out(directive + " " + identifier + " : " + variableDeclaration.getType().getTypeName());
+        }
+        return null;
+    }
 
-	// class VariableDeclaration(List<String> identifiers, Type type)
-	// phase MemoryAllocation { int address }
-	@Override
-	public Object visit(VariableDeclaration variableDeclaration, Object param) {
+    // class StructField(String name, Type type)
+    // phase Identification { StructDeclaration structDeclaration }
+    // phase MemoryAllocation { int address }
+    @Override
+    public Object visit(StructField structField, Object param) {
+        // No se emite ninguna directiva; los campos se manejan en #TYPE en GenerateStruct
+        return null;
+    }
 
-		// declareType(variableDeclaration.getType());
-
-		out("<instruction>");
-
-		return null;
-	}
-
-	// class StructField(String name, Type type)
-	// phase Identification { StructDeclaration structDeclaration }
-	// phase MemoryAllocation { int address }
-	@Override
-	public Object visit(StructField structField, Object param) {
-
-		// declareType(structField.getType());
-
-		out("<instruction>");
-
-		return null;
-	}
-
-	// class Arg(String name, Type type)
-	// phase MemoryAllocation { int address }
-	@Override
-	public Object visit(Arg arg, Object param) {
-
-		// declareType(arg.getType());
-
-		out("<instruction>");
-
-		return null;
-	}
-
+    // class Arg(String name, Type type)
+    // phase MemoryAllocation { int address }
+    @Override
+    public Object visit(Arg arg, Object param) {
+        out("#PARAM " + arg.getName() + " : " + arg.getType().getTypeName());
+        return null;
+    }
 }

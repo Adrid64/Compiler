@@ -17,11 +17,15 @@ public class GenerateGlobals extends AbstractCodeFunction {
 	@Override
 	public Object visit(GlobalSection globalSection, Object param) {
 
+		if(globalSection.getTypesSection().isPresent()) {
+			generateTypes(globalSection.getTypesSection().get());
+		}
+		if(globalSection.getVarSection().isPresent()) {
+			generateVars(globalSection.getVarSection().get());
+		}
 		// generateTypes(globalSection.getTypesSection());
 
 		// generateVars(globalSection.getVarSection());
-
-		out("<instruction>");
 
 		return null;
 	}
