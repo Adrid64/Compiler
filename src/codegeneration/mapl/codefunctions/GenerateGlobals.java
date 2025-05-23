@@ -1,0 +1,29 @@
+// Generated with VGen 2.0.0
+
+package codegeneration.mapl.codefunctions;
+
+import ast.*;
+import codegeneration.mapl.*;
+
+
+public class GenerateGlobals extends AbstractCodeFunction {
+
+    public GenerateGlobals(MaplCodeSpecification specification) {
+        super(specification);
+    }
+
+
+	// class GlobalSection(Optional<TypesSection> typesSection, Optional<VarSection> varSection)
+	@Override
+	public Object visit(GlobalSection globalSection, Object param) {
+
+		// generateTypes(globalSection.getTypesSection());
+
+		// generateVars(globalSection.getVarSection());
+
+		out("<instruction>");
+
+		return null;
+	}
+
+}

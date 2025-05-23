@@ -1,0 +1,304 @@
+' Generated with VGen 2.0.0
+
+@startuml
+
+class Position {
+    +int getLine()
+    +int getColumn()
+    +boolean lessThan(Position other)
+    +boolean greaterThan(Position other)
+}
+
+interface AST {
+    +updatePositions(Object... children)
+    +updatePositions(Position start, Position end)
+    +Object accept(Visitor visitor, Object param)
+}
+
+AST *-[#404040,thickness=1]- Position : start >
+AST *-[#404040,thickness=1]- Position : end >
+
+
+interface Expression {
+	..<color:#3366cc> TypeChecking </color>..
+	+<color:#3366cc>boolean lvalue</color>
+}
+AST <|-[#808080]- Expression
+Expression -[#3366cc,thickness=3]-  Type #text:3366cc : type >
+
+interface Statement {
+}
+AST <|-[#808080]- Statement
+Statement -[#3366cc,thickness=3]-  FeatureSection #text:3366cc : featureSection >
+
+interface Type {
+}
+AST <|-[#808080]- Type
+
+interface Declaration {
+}
+AST <|-[#808080]- Declaration
+
+interface AST {
+}
+
+class Program {
+}
+AST <|-[#808080]- Program
+Program o-[#404040,thickness=2]-  ClassDeclaration : classDeclaration >
+Program o-[#404040,thickness=2]-  RunStatement : runStatement >
+
+class ClassDeclaration {
+	+String name
+}
+AST <|-[#808080]- ClassDeclaration
+ClassDeclaration o-[#404040,thickness=2]- "0..1" GlobalSection : globalSection >
+ClassDeclaration o-[#404040,thickness=2]-  CreateSection : createSection >
+ClassDeclaration o-[#404040,thickness=2]- "✱" FeatureSection : featureSections >
+
+class GlobalSection {
+}
+AST <|-[#808080]- GlobalSection
+GlobalSection o-[#404040,thickness=2]- "0..1" TypesSection : typesSection >
+GlobalSection o-[#404040,thickness=2]- "0..1" VarSection : varSection >
+
+class TypesSection {
+}
+AST <|-[#808080]- TypesSection
+TypesSection o-[#404040,thickness=2]- "✱" StructDeclaration : structDeclarations >
+
+class VarSection {
+}
+AST <|-[#808080]- VarSection
+VarSection o-[#404040,thickness=2]- "✱" VariableDeclaration : variableDeclarations >
+
+class VariableDeclaration {
+	+List<String> identifiers
+	..<color:#669900> MemoryAllocation </color>..
+	+<color:#669900>int address</color>
+}
+Declaration <|-[#808080]- VariableDeclaration
+VariableDeclaration o-[#404040,thickness=2]-  Type : type >
+
+class StructDeclaration {
+	+String name
+}
+AST <|-[#808080]- StructDeclaration
+StructDeclaration o-[#404040,thickness=2]- "✱" StructField : structFields >
+
+class StructField {
+	+String name
+	..<color:#669900> MemoryAllocation </color>..
+	+<color:#669900>int address</color>
+}
+Declaration <|-[#808080]- StructField
+StructField o-[#404040,thickness=2]-  Type : type >
+StructField -[#ff6600,thickness=3]-  StructDeclaration #text:ff6600 : structDeclaration >
+
+class CreateSection {
+	+List<String> strings
+}
+AST <|-[#808080]- CreateSection
+
+class FeatureSection {
+	+String name
+	..<color:#3366cc> TypeChecking </color>..
+	+<color:#3366cc>boolean hasReturn</color>
+}
+AST <|-[#808080]- FeatureSection
+FeatureSection o-[#404040,thickness=2]- "0..1" Args : args >
+FeatureSection o-[#404040,thickness=2]- "0..1" Type : type >
+FeatureSection o-[#404040,thickness=2]- "0..1" LocalSection : localSection >
+FeatureSection o-[#404040,thickness=2]- "✱" Statement : statements >
+
+class LocalSection {
+}
+AST <|-[#808080]- LocalSection
+LocalSection o-[#404040,thickness=2]- "✱" VariableDeclaration : variableDeclarations >
+
+class Args {
+}
+AST <|-[#808080]- Args
+Args o-[#404040,thickness=2]- "✱" Arg : args >
+
+class Arg {
+	+String name
+	..<color:#669900> MemoryAllocation </color>..
+	+<color:#669900>int address</color>
+}
+Declaration <|-[#808080]- Arg
+Arg o-[#404040,thickness=2]-  Type : type >
+
+class Assignment {
+}
+Statement <|-[#808080]- Assignment
+Assignment o-[#404040,thickness=2]-  Expression : left >
+Assignment o-[#404040,thickness=2]-  Expression : right >
+
+class Print {
+}
+Statement <|-[#808080]- Print
+Print o-[#404040,thickness=2]- "✱" Expression : expressions >
+
+class Println {
+}
+Statement <|-[#808080]- Println
+Println o-[#404040,thickness=2]- "✱" Expression : expressions >
+
+class Read {
+}
+Statement <|-[#808080]- Read
+Read o-[#404040,thickness=2]- "✱" Expression : expressions >
+
+class Bloqueif {
+}
+Statement <|-[#808080]- Bloqueif
+Bloqueif o-[#404040,thickness=2]-  Expression : expression >
+Bloqueif o-[#404040,thickness=2]- "✱" Statement : st2 >
+Bloqueif o-[#404040,thickness=2]- "✱" Statement : st3 >
+
+class LoopFrom {
+}
+Statement <|-[#808080]- LoopFrom
+LoopFrom o-[#404040,thickness=2]- "✱" Statement : st1 >
+LoopFrom o-[#404040,thickness=2]-  Expression : expression >
+LoopFrom o-[#404040,thickness=2]- "✱" Statement : body >
+
+class Return {
+}
+Statement <|-[#808080]- Return
+Return o-[#404040,thickness=2]- "0..1" Expression : expression >
+
+class FunctionCallStatement {
+	+String name
+}
+Statement <|-[#808080]- FunctionCallStatement
+FunctionCallStatement o-[#404040,thickness=2]- "✱" Expression : expressions >
+
+class RunStatement {
+	+String name
+}
+Statement <|-[#808080]- RunStatement
+RunStatement o-[#404040,thickness=2]- "✱" Expression : expressions >
+
+class IntLiteral {
+	+String name
+}
+Expression <|-[#808080]- IntLiteral
+
+class RealConstant {
+	+String name
+}
+Expression <|-[#808080]- RealConstant
+
+class CharConstant {
+	+String name
+}
+Expression <|-[#808080]- CharConstant
+
+class FunctionCallExp {
+	+String name
+}
+Expression <|-[#808080]- FunctionCallExp
+FunctionCallExp o-[#404040,thickness=2]- "✱" Expression : expresiones >
+FunctionCallExp -[#ff6600,thickness=3]-  FeatureSection #text:ff6600 : featureSection >
+
+class ArrayAcces {
+}
+Expression <|-[#808080]- ArrayAcces
+ArrayAcces o-[#404040,thickness=2]-  Expression : exp2 >
+ArrayAcces o-[#404040,thickness=2]-  Expression : exp3 >
+
+class VariableAcces {
+	+String name
+}
+Expression <|-[#808080]- VariableAcces
+VariableAcces -[#ff6600,thickness=3]-  Declaration #text:ff6600 : declaration >
+
+class RestaUnaria {
+}
+Expression <|-[#808080]- RestaUnaria
+RestaUnaria o-[#404040,thickness=2]-  Expression : exp2 >
+
+class Parentesis {
+}
+Expression <|-[#808080]- Parentesis
+Parentesis o-[#404040,thickness=2]-  Expression : exp2 >
+
+class Negacion {
+}
+Expression <|-[#808080]- Negacion
+Negacion o-[#404040,thickness=2]-  Expression : exp2 >
+
+class Cast {
+}
+Expression <|-[#808080]- Cast
+Cast o-[#404040,thickness=2]-  Type : tipoCast >
+Cast o-[#404040,thickness=2]-  Expression : exp2 >
+
+class Arithmetic {
+	+String name
+}
+Expression <|-[#808080]- Arithmetic
+Arithmetic o-[#404040,thickness=2]-  Expression : exp2 >
+Arithmetic o-[#404040,thickness=2]-  Expression : exp3 >
+
+class Relacional {
+	+String name
+}
+Expression <|-[#808080]- Relacional
+Relacional o-[#404040,thickness=2]-  Expression : exp2 >
+Relacional o-[#404040,thickness=2]-  Expression : exp3 >
+
+class BooleanExp {
+	+String name
+}
+Expression <|-[#808080]- BooleanExp
+BooleanExp o-[#404040,thickness=2]-  Expression : exp2 >
+BooleanExp o-[#404040,thickness=2]-  Expression : exp3 >
+
+class StructFieldAcces {
+	+String name
+}
+Expression <|-[#808080]- StructFieldAcces
+StructFieldAcces o-[#404040,thickness=2]-  Expression : exp2 >
+StructFieldAcces -[#ff6600,thickness=3]-  StructDeclaration #text:ff6600 : structDeclaration >
+
+class IntType {
+	+String name
+}
+Type <|-[#808080]- IntType
+
+class DoubleType {
+	+String name
+}
+Type <|-[#808080]- DoubleType
+
+class CharacterType {
+	+String name
+}
+Type <|-[#808080]- CharacterType
+
+class IdentType {
+	+String name
+}
+Type <|-[#808080]- IdentType
+IdentType -[#ff6600,thickness=3]-  StructDeclaration #text:ff6600 : structDeclaration >
+
+class Arraytype {
+	+int intValue
+}
+Type <|-[#808080]- Arraytype
+Arraytype o-[#404040,thickness=2]-  Type : type2 >
+
+class ErrorType {
+	+String name
+}
+Type <|-[#808080]- ErrorType
+
+class VoidType {
+	+String name
+}
+Type <|-[#808080]- VoidType
+
+@enduml

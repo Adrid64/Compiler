@@ -1,0 +1,153 @@
+<!-- Generated with VGen 2.0.0 -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Code Specification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+
+<style type="text/css">
+    body {
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 14px;
+        color: #595959;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    td {
+        padding: 5px 10px 5px 10px;
+        border: 1px solid #595959;
+        vertical-align: top;
+    }
+
+    .table-header {
+        color: #FFFFFF;
+        background-color: #2980B9;
+    }
+
+    .symbol-name {
+        font-weight: bold;
+    }
+
+    .parents {
+        color: #A6A6A6;
+    }
+
+    .att-name {
+        color: #F28A3E;
+        font-size: 12px;
+    }
+
+    .att-type {
+        color: #595959;
+        padding-right: 3px;
+    }
+
+</style>
+
+
+
+</head>
+
+<body>
+
+    <h2>Code Specification</h2>
+
+    <table>
+        <tr class="table-header">
+            <td>Functions</td>
+            <td>Code Templates</td>
+        </tr>
+
+
+
+
+        <tr>
+            <td>&fnof;<sub>0</sub>⟦<span class="symbol-name">program</span>⟧</td>
+            <td>&fnof;<sub>0</sub>⟦<span class="symbol-name">program</span> &rarr; <span class="att-type">classDeclaration</span> <span class="att-type">runStatement</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>1</sub>⟦<span class="symbol-name">classDeclaration</span>⟧</td>
+            <td>&fnof;<sub>1</sub>⟦<span class="symbol-name">classDeclaration</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-type">globalSection?</span> <span class="att-type">createSection</span> <span class="att-type">featureSection*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>2</sub>⟦<span class="symbol-name">globalSection</span>⟧</td>
+            <td>&fnof;<sub>2</sub>⟦<span class="symbol-name">globalSection</span> &rarr; <span class="att-type">typesSection?</span> <span class="att-type">varSection?</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>3</sub>⟦<span class="symbol-name">typesSection</span>⟧</td>
+            <td>&fnof;<sub>3</sub>⟦<span class="symbol-name">typesSection</span> &rarr; <span class="att-type">structDeclaration*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>4</sub>⟦<span class="symbol-name">varSection</span>⟧</td>
+            <td>&fnof;<sub>4</sub>⟦<span class="symbol-name">varSection</span> &rarr; <span class="att-type">variableDeclaration*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>5</sub>⟦<span class="symbol-name">structDeclaration</span>⟧</td>
+            <td>&fnof;<sub>5</sub>⟦<span class="symbol-name">structDeclaration</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-type">structField*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>6</sub>⟦<span class="symbol-name">createSection</span>⟧</td>
+            <td>&fnof;<sub>6</sub>⟦<span class="symbol-name">createSection</span> &rarr; <span class="att-type">string*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>7</sub>⟦<span class="symbol-name">featureSection</span>⟧</td>
+            <td>&fnof;<sub>7</sub>⟦<span class="symbol-name">featureSection</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-type">args?</span> <span class="att-type">type?</span> <span class="att-type">localSection?</span> <span class="att-type">statement*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>8</sub>⟦<span class="symbol-name">localSection</span>⟧</td>
+            <td>&fnof;<sub>8</sub>⟦<span class="symbol-name">localSection</span> &rarr; <span class="att-type">variableDeclaration*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>9</sub>⟦<span class="symbol-name">args</span>⟧</td>
+            <td>&fnof;<sub>9</sub>⟦<span class="symbol-name">args</span> &rarr; <span class="att-type">arg*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>10</sub>⟦<span class="symbol-name">expression</span>⟧</td>
+            <td>&fnof;<sub>10</sub>⟦<span class="symbol-name">intLiteral</span><span class="parents">:expression</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">realConstant</span><span class="parents">:expression</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">charConstant</span><span class="parents">:expression</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">functionCallExp</span><span class="parents">:expression</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-name">expresiones</span>:<span class="att-type">expression*</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">arrayAcces</span><span class="parents">:expression</span> &rarr; <span class="att-name">exp2</span>:<span class="att-type">expression</span> <span class="att-name">exp3</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">variableAcces</span><span class="parents">:expression</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">restaUnaria</span><span class="parents">:expression</span> &rarr; <span class="att-name">exp2</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">parentesis</span><span class="parents">:expression</span> &rarr; <span class="att-name">exp2</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">negacion</span><span class="parents">:expression</span> &rarr; <span class="att-name">exp2</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">cast</span><span class="parents">:expression</span> &rarr; <span class="att-name">tipoCast</span>:<span class="att-type">type</span> <span class="att-name">exp2</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">arithmetic</span><span class="parents">:expression</span> &rarr; <span class="att-name">exp2</span>:<span class="att-type">expression</span> <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-name">exp3</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">relacional</span><span class="parents">:expression</span> &rarr; <span class="att-name">exp2</span>:<span class="att-type">expression</span> <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-name">exp3</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">booleanExp</span><span class="parents">:expression</span> &rarr; <span class="att-name">exp2</span>:<span class="att-type">expression</span> <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-name">exp3</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>10</sub>⟦<span class="symbol-name">structFieldAcces</span><span class="parents">:expression</span> &rarr; <span class="att-name">exp2</span>:<span class="att-type">expression</span> <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>11</sub>⟦<span class="symbol-name">statement</span>⟧</td>
+            <td>&fnof;<sub>11</sub>⟦<span class="symbol-name">assignment</span><span class="parents">:statement</span> &rarr; <span class="att-name">left</span>:<span class="att-type">expression</span> <span class="att-name">right</span>:<span class="att-type">expression</span>⟧ = <br><br>&fnof;<sub>11</sub>⟦<span class="symbol-name">print</span><span class="parents">:statement</span> &rarr; <span class="att-type">expression*</span>⟧ = <br><br>&fnof;<sub>11</sub>⟦<span class="symbol-name">println</span><span class="parents">:statement</span> &rarr; <span class="att-type">expression*</span>⟧ = <br><br>&fnof;<sub>11</sub>⟦<span class="symbol-name">read</span><span class="parents">:statement</span> &rarr; <span class="att-type">expression*</span>⟧ = <br><br>&fnof;<sub>11</sub>⟦<span class="symbol-name">bloqueif</span><span class="parents">:statement</span> &rarr; <span class="att-type">expression</span> <span class="att-name">st2</span>:<span class="att-type">statement*</span> <span class="att-name">st3</span>:<span class="att-type">statement*</span>⟧ = <br><br>&fnof;<sub>11</sub>⟦<span class="symbol-name">loopFrom</span><span class="parents">:statement</span> &rarr; <span class="att-name">st1</span>:<span class="att-type">statement*</span> <span class="att-type">expression</span> <span class="att-name">body</span>:<span class="att-type">statement*</span>⟧ = <br><br>&fnof;<sub>11</sub>⟦<span class="symbol-name">return</span><span class="parents">:statement</span> &rarr; <span class="att-type">expression?</span>⟧ = <br><br>&fnof;<sub>11</sub>⟦<span class="symbol-name">functionCallStatement</span><span class="parents">:statement</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-type">expression*</span>⟧ = <br><br>&fnof;<sub>11</sub>⟦<span class="symbol-name">runStatement</span><span class="parents">:statement</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-type">expression*</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>12</sub>⟦<span class="symbol-name">type</span>⟧</td>
+            <td>&fnof;<sub>12</sub>⟦<span class="symbol-name">intType</span><span class="parents">:type</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>12</sub>⟦<span class="symbol-name">doubleType</span><span class="parents">:type</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>12</sub>⟦<span class="symbol-name">characterType</span><span class="parents">:type</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>12</sub>⟦<span class="symbol-name">identType</span><span class="parents">:type</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>12</sub>⟦<span class="symbol-name">arraytype</span><span class="parents">:type</span> &rarr; <span class="att-name">intValue</span>:<span class="att-type">int</span> <span class="att-name">type2</span>:<span class="att-type">type</span>⟧ = <br><br>&fnof;<sub>12</sub>⟦<span class="symbol-name">errorType</span><span class="parents">:type</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br>&fnof;<sub>12</sub>⟦<span class="symbol-name">voidType</span><span class="parents">:type</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span>⟧ = <br><br></td>
+        </tr>
+
+        <tr>
+            <td>&fnof;<sub>13</sub>⟦<span class="symbol-name">declaration</span>⟧</td>
+            <td>&fnof;<sub>13</sub>⟦<span class="symbol-name">variableDeclaration</span><span class="parents">:declaration</span> &rarr; <span class="att-name">identifiers</span>:<span class="att-type">string*</span> <span class="att-type">type</span>⟧ = <br><br>&fnof;<sub>13</sub>⟦<span class="symbol-name">structField</span><span class="parents">:declaration</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-type">type</span>⟧ = <br><br>&fnof;<sub>13</sub>⟦<span class="symbol-name">arg</span><span class="parents">:declaration</span> &rarr; <span class="att-name">name</span>:<span class="att-type">string</span> <span class="att-type">type</span>⟧ = <br><br></td>
+        </tr>
+
+
+    </table>
+
+
+</body>
+
+</html>
+

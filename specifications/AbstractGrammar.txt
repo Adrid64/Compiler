@@ -1,0 +1,109 @@
+CATEGORIES
+expression;
+statement;
+type;
+declaration;
+
+NODES
+
+program -> classDeclaration runStatement;
+
+classDeclaration -> string globalSection? createSection featureSection*;
+
+
+globalSection -> typesSection? varSection?;
+
+	
+typesSection -> structDeclaration* ;
+
+
+varSection ->variableDeclaration*;
+
+	
+variableDeclaration:declaration -> identifiers:string* type;
+
+	
+structDeclaration -> string structField*;
+
+	
+structField:declaration -> string type ;
+
+	
+createSection ->string*;
+
+featureSection -> string args? type?  localSection? statement*;
+	
+	
+localSection -> variableDeclaration*;
+	
+args -> arg*;
+
+arg:declaration -> string type;
+	
+
+assignment: statement -> left:expression right:expression;
+
+print: statement -> expression*;
+
+
+println: statement -> expression*;
+
+
+read: statement -> expression*;
+
+
+bloqueif: statement -> expression st2:statement* st3:statement*;
+
+loopFrom:statement -> st1:statement* expression body:statement* ;
+
+return: statement -> expression?;
+
+
+functionCallStatement: statement -> string expression* ;
+
+runStatement:statement -> string expression*;
+intLiteral: expression -> string;
+realConstant: expression -> string;
+charConstant: expression -> string;
+functionCallExp: expression -> string expresiones:expression*;
+arrayAcces: expression -> exp2:expression exp3:expression;
+variableAcces: expression -> string;
+restaUnaria: expression -> exp2:expression;
+parentesis: expression -> exp2:expression;
+negacion: expression -> exp2:expression;
+cast: expression -> tipoCast:type exp2:expression;
+arithmetic: expression -> exp2:expression string exp3:expression;
+relacional: expression -> exp2:expression string exp3:expression;
+booleanExp : expression -> exp2:expression string exp3:expression;
+structFieldAcces : expression -> exp2:expression string;
+    
+intType: type -> string;
+doubleType: type -> string;
+characterType: type -> string;
+
+identType: type -> string;
+arraytype: type -> int type2:type;
+errorType: type -> string;
+voidType: type -> string;
+
+//-------------------------------------
+//Duda borrar los atributos featureSection y dejarlo en statement en el typeChecking
+ATTRIBUTE GRAMMAR Identification
+variableAcces -> declaration;
+functionCallExp -> featureSection;
+identType -> structDeclaration;
+structField -> structDeclaration;
+structFieldAcces -> structDeclaration;
+
+//-------------------------------------
+ATTRIBUTE GRAMMAR TypeChecking
+statement  -> featureSection;
+expression -> lvalue:boolean;
+expression -> type;
+featureSection -> hasReturn:boolean;
+
+//-------------------------------------
+ATTRIBUTE GRAMMAR MemoryAllocation
+variableDeclaration -> [inh] address:int;
+structField -> [inh] address:int;
+arg -> [inh] address:int;

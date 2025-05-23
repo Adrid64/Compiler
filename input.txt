@@ -1,0 +1,53 @@
+//*
+Test para probar la Fase de Comprobación de Tipos
+
+COMPROBACION: El compilador del alumno debe detectar todos los errores indicados en los comentarios.
+
+ADVERTENCIA: Hay algunos errores que producen otros errores derivados.
+
+Por ejemplo:
+
+	print juan + anton;	// suma de dos estructuras 
+
+Lo anterior produce el error de que se están sumando dos expresiones de tipos no simples y además
+puede producir el error de que la expresión a imprimir tampoco es de tipo simple (al no quedar
+un tipo simple asociado a la suma al no haberse podido calcular su tipo).
+Estos errores derivados son normales y no es necesario intentar suprimirlos. 
+
+NOTA: Es posible que el alumno deba adaptar ligeramente la sintaxis del lenguaje si no coincide
+con la del lenguaje que le corresponde.
+*//
+
+class T_ERRTCH01;
+
+	global
+		types
+			deftuple Persona as
+				edad : INTEGER;
+				meses : [12] INTEGER;
+			end
+		vars
+			juan : Persona;
+			anton : Persona;
+
+	create
+		main;
+
+	feature j (a : INTEGER, b : DOUBLE)  is
+		do
+			
+			return 2.0; 
+		end
+
+	feature main is
+		local
+		i : INTEGER;
+		f : DOUBLE;
+		v : [10]INTEGER;
+
+		do
+			f + 2[2] := 4;
+		end
+end /* T_ERRTCH01
+
+run main();
