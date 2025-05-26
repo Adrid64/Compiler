@@ -41,7 +41,9 @@ public class GenerateFunction extends AbstractCodeFunction {
         out(featureSection.getName() + ":");
 
         // Emitir ENTER si hay variables locales
-        int localsSize = featureSection.getLocalSection().isPresent() ? calculateLocalsSize(featureSection.getLocalSection().get()) : 0;
+        int localsSize = featureSection.getLocalSection().isPresent()
+                ? calculateLocalsSize(featureSection.getLocalSection().get())
+                : 0;
         if (localsSize > 0) {
             out("ENTER " + localsSize);
         }
@@ -51,15 +53,17 @@ public class GenerateFunction extends AbstractCodeFunction {
             execute(statement, featureSection);
         }
 
-        // Emitir instrucción RET
-        int returnSize = featureSection.getType().isPresent() ? featureSection.getType().get().getSize() : 0;
-        int paramsSize = featureSection.getArgs().isPresent() ? calculateParamsSize(featureSection.getArgs().get()) : 0;
-        out("ret " + returnSize + ", " + localsSize + ", " + paramsSize);
+        // Emitir instrucción RET solo si no hay return explícito
+        if (!featureSection.isHasReturn()) {
+            int returnSize = featureSection.getType().isPresent() ? featureSection.getType().get().getSize() : 0;
+            int paramsSize = featureSection.getArgs().isPresent()
+                    ? calculateParamsSize(featureSection.getArgs().get())
+                    : 0;
+            out("ret " + returnSize + ", " + localsSize + ", " + paramsSize);
+        }
 
         return null;
     }
-
-    
 
     // Método auxiliar para calcular el tamaño de las variables locales
     private int calculateLocalsSize(LocalSection localSection) {

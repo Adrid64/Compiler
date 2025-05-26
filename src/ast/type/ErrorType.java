@@ -93,5 +93,6 @@ public class ErrorType extends AbstractType  {
 	}
     // %% --------------------------------------
 
+
 	
 }

@@ -106,10 +106,10 @@ public class Arraytype extends AbstractType  {
 
         // Methods/attributes in this section will be preserved. Delete if not needed
     @Override
-	public String getTypeName() {
-		// TODO Auto-generated method stub
-		return "Array";
-	}
+    public String getTypeName() {
+        return type2.getTypeName() + "[" + intValue + "]";
+    }
+
     
     @Override
 	public int getSize() {
@@ -117,6 +117,8 @@ public class Arraytype extends AbstractType  {
 		return type2.getSize()* intValue;
 	}
     // %% --------------------------------------
+
+
 
 	
 }

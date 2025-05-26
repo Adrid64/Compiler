@@ -3,6 +3,7 @@
 package ast.declaration;
 
 import ast.*;
+import ast.type.Type;
 
 // %% User Declarations -------------
 
@@ -21,6 +22,24 @@ public abstract class AbstractDeclaration extends AbstractAST implements Declara
     // %% User Members -------------------------
 
         // Methods/attributes in this section will be preserved. Delete if not needed
+		
+	protected Type type;
+    protected String name;
+    protected int scope;
+    @Override
+    public Type getType() {
+        return type;
+    }
 
+
+    @Override
+    public int getScope() {
+        return scope;
+    }
+
+    @Override
+    public void setScope(int scope) {
+        this.scope = scope;
+    }
     // %% --------------------------------------
 }

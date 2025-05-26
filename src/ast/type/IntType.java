@@ -84,7 +84,7 @@ public class IntType extends AbstractType  {
     @Override
 	public String getTypeName() {
 		// TODO Auto-generated method stub
-		return "Integer";
+		return "int";
 	}
     
     @Override
@@ -93,6 +93,8 @@ public class IntType extends AbstractType  {
 		return 2;
 	}
     // %% --------------------------------------
+
+
 
 	
 }

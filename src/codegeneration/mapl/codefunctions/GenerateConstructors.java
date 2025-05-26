@@ -17,7 +17,6 @@ public class GenerateConstructors extends AbstractCodeFunction {
 	@Override
 	public Object visit(CreateSection createSection, Object param) {
 
-		out("<instruction>");
 
 		return null;
 	}

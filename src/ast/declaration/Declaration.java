@@ -22,6 +22,8 @@ public interface Declaration extends AST {
 
         // Methods/attributes in this section will be preserved. Delete if not needed
 	Type getType();
+	public int getScope();
+    void setScope(int scope);
 	//----------------
 	//Duda si está bien
 	

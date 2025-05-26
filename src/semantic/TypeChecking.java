@@ -142,7 +142,6 @@ public class TypeChecking extends DefaultVisitor {
  	// class FeatureSection(String name, Optional<Args> args, Optional<Type> type, Optional<LocalSection> localSection, List<Statement> statements)
  	@Override
  	public Object visit(FeatureSection featureSection, Object param) {
-
  		 featureSection.getArgs().ifPresent(args ->{
  			 List<Arg> listArgs=args.getArgs();
  			 for (Arg arg : listArgs) {
@@ -157,7 +156,10 @@ public class TypeChecking extends DefaultVisitor {
  		
  		List<Statement> statements=featureSection.getStatements();
  		for (Statement statement : statements) {
+ 			if(statement.getFeatureSection()==null) {
 			statement.setFeatureSection(featureSection);
+			}
+			
 		}
  		super.visit(featureSection, param);
  		if(featureSection.getType().isEmpty()) {
@@ -340,6 +342,7 @@ public class TypeChecking extends DefaultVisitor {
  		// functionCallStatement.getExpressions().forEach(expression -> expression.accept(this, param));
  		super.visit(functionCallStatement, param);
  		Optional<Args> args=functionCallStatement.getFeatureSection().getArgs();
+ 		System.out.println("en el type:"+functionCallStatement.getName()+ " , "+functionCallStatement.getFeatureSection());
  		if(args.isPresent()) {
  			List<Arg> argsList=args.get().getArgs();
  			List<Expression> parametros=functionCallStatement.getExpressions();
@@ -353,7 +356,9 @@ public class TypeChecking extends DefaultVisitor {
 				;
 				indice++;
 			}
- 		}else {
+ 		}
+ 		else {
+
  			List<Expression> parametros=functionCallStatement.getExpressions();
 
  			predicate(parametros.size()==0,"Numero de parámetros incorrecto",functionCallStatement.end());
@@ -487,6 +492,7 @@ public class TypeChecking extends DefaultVisitor {
  		// arrayAcces.getExp2().accept(this, param);
  		// arrayAcces.getExp3().accept(this, param);
  		super.visit(arrayAcces, param);
+ 		
  		if(predicate(arrayAcces.getExp2().isLvalue(), "La expresión de la izquierda de un acceso a array debe ser un lvalue", arrayAcces.start())) {
  			
  		if(!predicate((arrayAcces.getExp2().getType() instanceof Arraytype) , "No es un array", arrayAcces.end())) {
@@ -500,14 +506,13 @@ public class TypeChecking extends DefaultVisitor {
  		
  		else {
  		arrayAcces.setLvalue(true);
-	 	arrayAcces.setType(arrayAcces.getExp2().getType());
+	 	arrayAcces.setType(((Arraytype)arrayAcces.getExp2().getType()).getType2());
 	 	}
  		
  		}
  		else {
  		
  		arrayAcces.setType(new ErrorType("Tipo incorrecto"));}
- 		
  		
  		
 
@@ -720,43 +725,22 @@ public class TypeChecking extends DefaultVisitor {
  	
 	// class StructFieldAcces(Expression exp2, String name)
  	// phase TypeChecking { boolean lvalue, Type type }
+ // En codegeneration/mapl/codefunctions/TypeChecking.java (o donde esté tu visitor)
  	@Override
  	public Object visit(StructFieldAcces structFieldAcces, Object param) {
+ 	    // 1) Procesamos primero el subárbol
+ 	    super.visit(structFieldAcces, param);
 
- 		// structFieldAcces.getExp2().accept(this, param);
- 		super.visit(structFieldAcces, param);
-		if(predicate(isIdentType(structFieldAcces.getExp2().getType()),"El tipo del acceso no es de tipo compuesto",structFieldAcces.end())) {
-			List<StructField> fields= structFieldAcces.getStructDeclaration().getStructFields();
-	 		boolean encontrado=false;
-	 		for (StructField structField : fields) {
-				if(structField.getName().equals(structFieldAcces.getName())) {
-					structFieldAcces.setType(structField.getType());
-					encontrado=true;
-				}
-				
-			}
-	 		if(!encontrado) {
-	 			structFieldAcces.setType(new ErrorType("El field del struct no existe"));
+ 	    Type exp2Type = structFieldAcces.getExp2().getType();
+ 	    // 3) Llamamos a dot() en ese tipo
+ 	    structFieldAcces.setType(exp2Type.dot(structFieldAcces.getName()));
+	        structFieldAcces.setLvalue(true);
 
-	 		}
-	 		
-	 		predicate(encontrado, "El campo "+ structFieldAcces.getName() +" no existe", structFieldAcces.end());
-	 		structFieldAcces.setLvalue(true);
-			
-		}
-		else {
- 			structFieldAcces.setType(new ErrorType("El field del struct no existe"));
 
-		}
-
- 
-		
- 		
- 		// TODO: Remember to initialize SYNTHESIZED attributes <-----
- 		// structFieldAcces.setLvalue(?);
- 		// structFieldAcces.setType(?);
- 		return null;
+ 	    return null;
  	}
+
+ 	
 
  	// class IntType(String name)
  	@Override

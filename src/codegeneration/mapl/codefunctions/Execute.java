@@ -46,7 +46,7 @@ public class Execute extends AbstractCodeFunction {
             value(expr);                  // Evaluar cada expresión
             out("out", expr.getType());   // Imprimir según el tipo
         }
-        out("pushb '\\n'");               // Colocar '\n' en la pila
+        out("pushb 10");              // Colocar '\n' en la pila
         out("out", new CharacterType("")); // Imprimir salto de línea
         return null;
     }

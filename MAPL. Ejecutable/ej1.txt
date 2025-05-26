@@ -1,0 +1,8 @@
+pusha 0
+push 3
+store
+pusha 0
+load
+pusha 2
+store
+halt

@@ -30,7 +30,28 @@ public class Value extends AbstractCodeFunction {
     // phase TypeChecking { boolean lvalue, Type type }
     @Override
     public Object visit(CharConstant charConstant, Object param) {
-        out("pushb '" + charConstant.getName() + "'");
+        String literal = charConstant.getName();
+        int asciiValue;
+
+        // Check if the string is a valid character literal (starts and ends with quotes)
+        if (literal.length() >= 2 && literal.startsWith("'") && literal.endsWith("'")) {
+            // Extract the content between the quotes
+            String content = literal.substring(1, literal.length() - 1);
+
+            // Handle escape sequences (e.g., '\n') or single characters (e.g., 'H')
+            if (content.equals("\\n")) {
+                asciiValue = 10; // ASCII 10 for newline
+            } else if (content.length() == 1) {
+                asciiValue = content.charAt(0); // Single character (e.g., 'H' -> 72)
+            } else {
+                throw new IllegalStateException("Invalid character literal: " + literal);
+            }
+        } else {
+            throw new IllegalStateException("Invalid character literal format: " + literal);
+        }
+
+        // Output pushb with the ASCII value
+        out("pushb " + asciiValue);
         return null;
     }
 
@@ -82,6 +103,66 @@ public class Value extends AbstractCodeFunction {
         value(parentesis.getExp2());
         return null;
     }
+    
+    @Override
+    public Object visit(Relacional relacional, Object param) {
+        // Evaluate left operand
+        value(relacional.getExp2());
+        // Evaluate right operand
+        value(relacional.getExp3());
+        // Emit comparison instruction based on operator and type
+        String operator = relacional.getName();
+        if (relacional.getExp2().getType() instanceof DoubleType) {
+            switch (operator) {
+                case "<":
+                    out("ltf"); // Less than (float)
+                    break;
+                case ">":
+                    out("gtf"); // Greater than (float)
+                    break;
+                case "<=":
+                    out("lef"); // Less than or equal (float)
+                    break;
+                case ">=":
+                    out("gef"); // Greater than or equal (float)
+                    break;
+                case "==":
+                    out("eqf"); // Equal (float)
+                    break;
+                case "!=":
+                    out("nef"); // Not equal (float)
+                    break;
+                default:
+                    throw new IllegalStateException("Unknown relational operator: " + operator);
+            }
+        } else if (relacional.getExp2().getType() instanceof IntType) {
+            switch (operator) {
+                case "<":
+                    out("lti"); // Less than (integer)
+                    break;
+                case ">":
+                    out("gti"); // Greater than (integer)
+                    break;
+                case "<=":
+                    out("lei"); // Less than or equal (integer)
+                    break;
+                case ">=":
+                    out("gei"); // Greater than or equal (integer)
+                    break;
+                case "==":
+                    out("eqi"); // Equal (integer)
+                    break;
+                case "!=":
+                    out("nei"); // Not equal (integer)
+                    break;
+                default:
+                    throw new IllegalStateException("Unknown relational operator: " + operator);
+            }
+        } else {
+            throw new IllegalStateException("Unsupported type for relational operation: " + relacional.getExp2().getType());
+        }
+        return null;
+    }
 
     // class Negacion(Expression exp2)
     // phase TypeChecking { boolean lvalue, Type type }
@@ -131,22 +212,26 @@ public class Value extends AbstractCodeFunction {
     public Object visit(BooleanExp booleanExp, Object param) {
         value(booleanExp.getExp2());
         value(booleanExp.getExp3());
+        
         String op = booleanExp.getName();
         String instruction;
+
+        // Solo se aceptan operadores lógicos booleanos aquí (and/or)
         switch (op) {
-            case "&&": instruction = "and"; break;
-            case "||": instruction = "or"; break;
-            case "==": instruction = "eq"; break;
-            case "!=": instruction = "ne"; break;
-            case "<": instruction = "lt"; break;
-            case ">": instruction = "gt"; break;
-            case "<=": instruction = "le"; break;
-            case ">=": instruction = "ge"; break;
-            default: throw new IllegalArgumentException("Unsupported boolean operator: " + op);
+            case "and":
+                instruction = "and";
+                break;
+            case "or":
+                instruction = "or";
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported boolean operator in BooleanExp: " + op);
         }
-        out(instruction, booleanExp.getType());
+
+        out(instruction); 
         return null;
     }
+
 
     // class StructFieldAcces(Expression exp2, String name)
     // phase Identification { StructDeclaration structDeclaration }

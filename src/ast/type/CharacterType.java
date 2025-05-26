@@ -84,7 +84,7 @@ public class CharacterType extends AbstractType  {
     @Override
 	public String getTypeName() {
 		// TODO Auto-generated method stub
-		return "Char";
+		return "char";
 	}
     @Override
 	public int getSize() {
@@ -92,6 +92,8 @@ public class CharacterType extends AbstractType  {
 		return 1;
 	}
     // %% --------------------------------------
+
+
 
 	
 }

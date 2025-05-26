@@ -84,7 +84,7 @@ public class DoubleType extends AbstractType  {
     @Override
 	public String getTypeName() {
 		// TODO Auto-generated method stub
-		return "Double";
+		return "real";
 	}
     @Override
 	public int getSize() {
@@ -92,6 +92,8 @@ public class DoubleType extends AbstractType  {
 		return 4;
 	}
     // %% --------------------------------------
+
+
 
 	
 }

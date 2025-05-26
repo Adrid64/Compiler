@@ -1,53 +1,79 @@
 //*
-Test para probar la Fase de Comprobación de Tipos
+Test 3 para probar la Fase de Generación de Código
 
-COMPROBACION: El compilador del alumno debe detectar todos los errores indicados en los comentarios.
+COMPROBACION. Al ejecutar el programa deberá salir:
+A
+1.5
+1.49
+1.48
 
-ADVERTENCIA: Hay algunos errores que producen otros errores derivados.
+CONSEJO: No limitarse a comprobar el resultado de la ejecución. Se recomienda además abrir el fichero generado usando el depurador GVM y comprobar sus instrucciones.
 
-Por ejemplo:
-
-	print juan + anton;	// suma de dos estructuras 
-
-Lo anterior produce el error de que se están sumando dos expresiones de tipos no simples y además
-puede producir el error de que la expresión a imprimir tampoco es de tipo simple (al no quedar
-un tipo simple asociado a la suma al no haberse podido calcular su tipo).
-Estos errores derivados son normales y no es necesario intentar suprimirlos. 
+Para facilitar esta tarea es de gran utilidad que el alumno haya generado directivas '#line' en el fichero de salida.
+Para información sobre la función de dicha directiva se debe abrir con GVM el siguiente tutorial: 
+Tutorial\3 Uso básico del depurador\4 Fusión Alto Nivel.txt
 
 NOTA: Es posible que el alumno deba adaptar ligeramente la sintaxis del lenguaje si no coincide
 con la del lenguaje que le corresponde.
 *//
 
-class T_ERRTCH01;
-
+class Test003;
 	global
 		types
-			deftuple Persona as
-				edad : INTEGER;
-				meses : [12] INTEGER;
+			deftuple Piloto as
+				inicial:CHARACTER;  
+				crono:[3]DOUBLE;	/* Tiempos en la Q1, Q2 y Q3
 			end
 		vars
-			juan : Persona;
-			anton : Persona;
+			F1: [3]Piloto;
 
-	create
-		main;
-
-	feature j (a : INTEGER, b : DOUBLE)  is
+	create inicio;
+	
+	feature inicia(i:INTEGER, inicial:CHARACTER, q1:DOUBLE, q2:DOUBLE, q3:DOUBLE) is
 		do
-			
-			return 2.0; 
-		end
+			F1[i].inicial := inicial;
+			F1[i].crono[0] := q1;
+			F1[i].crono[1] := q2;
+			F1[i].crono[2] := q3;
+	end
 
-	feature main is
+	feature imprimeElMejor is
 		local
-		i : INTEGER;
-		f : DOUBLE;
-		v : [10]INTEGER;
-
+			mejorPiloto:INTEGER;
+			menorCrono:DOUBLE;
+			ultimaCrono:DOUBLE;
+			i:INTEGER;
 		do
-			f + 2[2] := 4;
-		end
-end /* T_ERRTCH01
+			menorCrono := 1000.0;
+			from
+			i := 0;
+			until i >= 3 loop
+				ultimaCrono := F1[i].crono[2];
+				if ultimaCrono < menorCrono then	/* Solo importa la Q3
+					menorCrono := ultimaCrono; 
+					mejorPiloto := i;
+				end
+				i := i + 1;
+			end
 
-run main();
+			println F1[mejorPiloto].inicial;
+			from
+				i := 0;
+			until i >= 3 loop
+				println F1[mejorPiloto].crono[i];
+				i := i + 1;
+			end 
+	end
+
+	feature inicio is
+		do
+		inicia(0, 'A', 1.50, 1.49, 1.48);	/* Alonso
+		inicia(1, 'H', 1.52, 1.51, 1.50);	/* Hamilton
+		inicia(2, 'V', 1.54, 1.52, 1.51);	/* Vettel
+
+		imprimeElMejor();	/* Los ordenadores no se equivocan
+	end
+end
+
+
+run	inicio();

@@ -1,6 +1,7 @@
 package codegeneration.mapl.codefunctions;
 
 import ast.declaration.*;
+import ast.type.*;
 import codegeneration.mapl.*;
 
 public class Declare extends AbstractCodeFunction {
@@ -13,8 +14,8 @@ public class Declare extends AbstractCodeFunction {
     // phase MemoryAllocation { int address }
     @Override
     public Object visit(VariableDeclaration variableDeclaration, Object param) {
-        String scope = variableDeclaration.getScope();
-        String directive = scope.equals("global") ? "#GLOBAL" : "#LOCAL";
+        int scope = variableDeclaration.getScope();
+        String directive = (scope == 0) ? "#GLOBAL" : "#LOCAL";
         for (String identifier : variableDeclaration.getIdentifiers()) {
             out(directive + " " + identifier + " : " + variableDeclaration.getType().getTypeName());
         }
@@ -34,7 +35,9 @@ public class Declare extends AbstractCodeFunction {
     // phase MemoryAllocation { int address }
     @Override
     public Object visit(Arg arg, Object param) {
-        out("#PARAM " + arg.getName() + " : " + arg.getType().getTypeName());
+        out("#PARAM " + arg.getName() + " : " + arg.getType().getTypeName()
+        		);
         return null;
     }
+
 }

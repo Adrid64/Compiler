@@ -84,7 +84,7 @@ public class VoidType extends AbstractType  {
     @Override
 	public String getTypeName() {
 		// TODO Auto-generated method stub
-		return "Void";
+		return "void";
 	}
     @Override
 	public int getSize() {
@@ -92,6 +92,7 @@ public class VoidType extends AbstractType  {
 		return 0;
 	}
     // %% --------------------------------------
+
 
 	
 }

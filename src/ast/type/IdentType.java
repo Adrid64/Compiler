@@ -128,5 +128,15 @@ public class IdentType extends AbstractType  {
 	}
     // %% --------------------------------------
 
+    @Override
+    public Type dot(String fieldName) {
+        for (StructField field : structDeclaration.getStructFields()) {
+            if (field.getName().equals(fieldName)) {
+                return field.getType();
+            }
+        }
+        // Si no existe, devolvemos un ErrorType con mensaje
+        return new ErrorType("El campo '" + fieldName + "' no existe en '" + name + "'");
+    }
 	
 }
