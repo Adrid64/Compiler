@@ -10,23 +10,30 @@ import ast.type.IntType;
 import ast.type.Type;
 import ast.type.VoidType;
 import codegeneration.mapl.*;
-
 public class GenerateVars extends AbstractCodeFunction {
+
+    private int nextGlobalAddress = 0;
 
     public GenerateVars(MaplCodeSpecification specification) {
         super(specification);
     }
 
-    // class VarSection(List<VariableDeclaration> variableDeclarations)
     @Override
     public Object visit(VarSection varSection, Object param) {
         for (VariableDeclaration varDecl : varSection.getVariableDeclarations()) {
             for (String identifier : varDecl.getIdentifiers()) {
-                out("#GLOBAL " + identifier + " : " + varDecl.getType().getTypeName());
+                out("#GLOBAL " + identifier + " : " + varDecl.getType().getMaplName());
+                varDecl.setAddress(nextGlobalAddress);
+                nextGlobalAddress += varDecl.getType().getSize();
             }
         }
         return null;
     }
+}
+
+
+
+
 
     
-    }
+    

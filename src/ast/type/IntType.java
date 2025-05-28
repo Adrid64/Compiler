@@ -92,9 +92,10 @@ public class IntType extends AbstractType  {
 		// TODO Auto-generated method stub
 		return 2;
 	}
+    @Override
+	public String getMaplName() {
+		// TODO Auto-generated method stub
+		return "int";
+	}
     // %% --------------------------------------
-
-
-
-	
 }

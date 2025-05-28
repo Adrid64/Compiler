@@ -67,14 +67,14 @@ public class MemoryAllocation extends DefaultVisitor {
    	// class VarSection(List<VariableDeclaration> variableDeclarations)
    	@Override
    	public Object visit(VarSection varSection, Object param) {
-   		int address=0;
-   		for (var variableDeclaration : varSection.getVariableDeclarations()) {
-   			variableDeclaration.setAddress(address);
-   			address+=variableDeclaration.getType().getSize();
-   			// TODO: Remember to initialize INHERITED attributes <----
-   			// variableDeclaration.setAddress(?);
-   			
+   		int address = 0;
+   		for (VariableDeclaration variableDeclaration : varSection.getVariableDeclarations()) {
+   		    for (String name : variableDeclaration.getIdentifiers()) {
+   		        variableDeclaration.setAddress(address);
+   		        address += variableDeclaration.getType().getSize();
+   		    }
    		}
+
 
    		// varSection.getVariableDeclarations().forEach(variableDeclaration -> variableDeclaration.accept(this, param));
    		super.visit(varSection, param);
@@ -146,20 +146,18 @@ public class MemoryAllocation extends DefaultVisitor {
    	// class LocalSection(List<VariableDeclaration> variableDeclarations)
    	@Override
    	public Object visit(LocalSection localSection, Object param) {
-   		int address=0;
-   		for (var variableDeclaration : localSection.getVariableDeclarations()) {
-   			// TODO: Remember to initialize INHERITED attributes <----
-   			// variableDeclaration.setAddress(?);
-   			address-=variableDeclaration.getType().getSize();
-   			variableDeclaration.setAddress(address);
-   			
-   		}
-
-   		// localSection.getVariableDeclarations().forEach(variableDeclaration -> variableDeclaration.accept(this, param));
-   		super.visit(localSection, param);
-
-   		return null;
+   	    int offset = 0;
+   	    for (VariableDeclaration decl : localSection.getVariableDeclarations()) {
+   	        for (String id : decl.getIdentifiers()) {
+   	            offset -= decl.getType().getSize();
+   	            // crea una nueva VariableDeclaration por identificador si es necesario
+   	            decl.setAddress(offset);
+   	        }
+   	    }
+   	    super.visit(localSection, param);
+   	    return null;
    	}
+
 
    	// class Args(List<Arg> args)
    	@Override

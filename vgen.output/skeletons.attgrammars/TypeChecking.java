@@ -106,6 +106,7 @@ public class TypeChecking extends DefaultVisitor {
 		// globalSection.getTypesSection().ifPresent(typesSection -> typesSection.accept(this, param));
 		// globalSection.getVarSection().ifPresent(varSection -> varSection.accept(this, param));
 		super.visit(globalSection, param);
+
 		return null;
 	}
 

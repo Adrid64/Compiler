@@ -3,12 +3,11 @@
 package ast.declaration;
 
 import ast.*;
-import ast.type.Type;
 
 // %% User Declarations -------------
 
     // Declarations (e.g. imports) in this section will be preserved. Delete if not needed
-
+import ast.type.Type;
 // %% -------------------------------
 
 /*

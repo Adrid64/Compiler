@@ -79,8 +79,13 @@ public class DoubleType extends AbstractType  {
 
 
     // %% User Members -------------------------
-
+    
         // Methods/attributes in this section will be preserved. Delete if not needed
+    @Override
+	public String getMaplName() {
+		// TODO Auto-generated method stub
+		return "float";
+	}
     @Override
 	public String getTypeName() {
 		// TODO Auto-generated method stub
@@ -92,8 +97,4 @@ public class DoubleType extends AbstractType  {
 		return 4;
 	}
     // %% --------------------------------------
-
-
-
-	
 }

@@ -5,7 +5,6 @@
 
 package semantic;
 
-import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -241,10 +240,6 @@ public class TypeChecking extends DefaultVisitor {
  	private boolean isSimpleType(Type type) {
  	    return !(type instanceof IdentType);
  	}
- 	private boolean isIdentType(Type type) {
-		// TODO Auto-generated method stub
- 		return type instanceof IdentType;
-	}
 
 	// class Print(List<Expression> expressions)
  	@Override
@@ -289,6 +284,8 @@ public class TypeChecking extends DefaultVisitor {
  		// bloqueif.getExpression().accept(this, param);
  		// bloqueif.getSt2().forEach(statement -> statement.accept(this, param));
  		// bloqueif.getSt3().forEach(statement -> statement.accept(this, param));
+		 bloqueif.getSt2().forEach(s -> {if(s.getFeatureSection()==null) s.setFeatureSection(bloqueif.getFeatureSection());});
+         bloqueif.getSt3().forEach(s -> {if(s.getFeatureSection()==null) s.setFeatureSection(bloqueif.getFeatureSection());});
  		super.visit(bloqueif, param);
 
    		predicate(sameType(bloqueif.getExpression().getType(), new IntType("Integer")) ,"La expresion no es un booleano",bloqueif.end());
@@ -303,7 +300,8 @@ public class TypeChecking extends DefaultVisitor {
 
  		// loopFrom.getSt1().forEach(statement -> statement.accept(this, param));
  		// loopFrom.getExpression().accept(this, param);
- 		// loopFrom.getBody().forEach(statement -> statement.accept(this, param));
+ 		loopFrom.getBody().forEach(s -> {if(s.getFeatureSection()==null) s.setFeatureSection(loopFrom.getFeatureSection());});
+		 loopFrom.getSt1().forEach(s -> {if(s.getFeatureSection()==null) s.setFeatureSection(loopFrom.getFeatureSection());});
  		super.visit(loopFrom, param);
 
  		predicate(sameType(loopFrom.getExpression().getType(), new IntType("Integer")) ,"La expresion no es un booleano",loopFrom.end());
@@ -315,24 +313,29 @@ public class TypeChecking extends DefaultVisitor {
  	// class Return(Optional<Expression> expression)
  	@Override
  	public Object visit(Return returnValue, Object param) {
- 		
- 	// returnValue.getExpression().ifPresent(expression -> expression.accept(this, param));
- 	 		super.visit(returnValue, param);
- 		returnValue.getFeatureSection().setHasReturn(true);
- 		if(returnValue.getExpression().isPresent()) {
- 			if(returnValue.getFeatureSection().getType().isPresent()){
- 	 	   		predicate(sameType(returnValue.getExpression().get().getType(), returnValue.getFeatureSection().getType().get()) ,"El tipo de retorno no es el mismo que el de la funcion",returnValue.end());
+ 	    super.visit(returnValue, param);
 
- 			}
+ 	    // Solo marcar como que tiene retorno si lleva expresión
+ 	    if (returnValue.getExpression().isPresent()) {
+ 	        returnValue.getFeatureSection().setHasReturn(true);
 
- 	   		predicate(isSimpleType(returnValue.getExpression().get().getType()) ,"El tipo de retorno no es simple",returnValue.end());
+ 	        if (returnValue.getFeatureSection().getType().isPresent()) {
+ 	            predicate(
+ 	                sameType(returnValue.getExpression().get().getType(),
+ 	                         returnValue.getFeatureSection().getType().get()),
+ 	                "El tipo de retorno no es el mismo que el de la funcion",
+ 	                returnValue.end()
+ 	            );
+ 	        }
 
- 		}
+ 	        predicate(isSimpleType(returnValue.getExpression().get().getType()),
+ 	                  "El tipo de retorno no es simple",
+ 	                  returnValue.end());
+ 	    }
 
- 		
-
- 		return null;
+ 	    return null;
  	}
+
 
  	// class FunctionCallStatement(String name, List<Expression> expressions)
  	// phase Identification { FeatureSection featureSection }
@@ -341,8 +344,8 @@ public class TypeChecking extends DefaultVisitor {
 
  		// functionCallStatement.getExpressions().forEach(expression -> expression.accept(this, param));
  		super.visit(functionCallStatement, param);
+
  		Optional<Args> args=functionCallStatement.getFeatureSection().getArgs();
- 		System.out.println("en el type:"+functionCallStatement.getName()+ " , "+functionCallStatement.getFeatureSection());
  		if(args.isPresent()) {
  			List<Arg> argsList=args.get().getArgs();
  			List<Expression> parametros=functionCallStatement.getExpressions();
@@ -595,8 +598,9 @@ public class TypeChecking extends DefaultVisitor {
 
  		// cast.getTipoCast().accept(this, param);
  		// cast.getExp2().accept(this, param);
- 		comprobarReglasCast(cast);
+ 		
  		super.visit(cast, param);
+ 		comprobarReglasCast(cast);
 
  		// TODO: Remember to initialize SYNTHESIZED attributes <-----
  		// cast.setLvalue(?);
@@ -798,9 +802,6 @@ public class TypeChecking extends DefaultVisitor {
         errorManager.notify("Type Checking", errorMessage, position);
     }
 
-    private void notifyError(String msg) {
-        errorManager.notify("Type Checking", msg);
-    }
 
     /**
      * predicate. Auxiliary method to implement predicates. Delete if not needed.

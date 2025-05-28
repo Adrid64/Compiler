@@ -22,7 +22,7 @@ public class GenerateLocals extends AbstractCodeFunction {
     public Object visit(LocalSection localSection, Object param) {
         for (VariableDeclaration varDecl : localSection.getVariableDeclarations()) {
             for (String identifier : varDecl.getIdentifiers()) {
-                out("#LOCAL " + identifier + " : " +varDecl.getType().getTypeName());
+                out("#LOCAL " + identifier + " : " +varDecl.getType().getMaplName());
             }
         }
         return null;

@@ -91,8 +91,12 @@ public class VoidType extends AbstractType  {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+    
+
+	@Override
+	public String getMaplName() {
+		// TODO Auto-generated method stub
+		return "void";
+	}
     // %% --------------------------------------
-
-
-	
 }

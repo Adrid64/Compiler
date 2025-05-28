@@ -22,7 +22,6 @@ public class GenerateClass extends AbstractCodeFunction {
             generateFunction(featureSection);
         }
 
-        // Nota: createSection no genera código según la especificación
         return null;
     }
 }

@@ -123,18 +123,6 @@ public class Arg extends AbstractDeclaration  {
         return "Arg{" + " name=" + this.getName() + " type=" + this.getType() + "}";
     }
 
-	@Override
-	public int getScope() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setScope(int scope) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
     // %% User Members -------------------------
 

@@ -87,12 +87,14 @@ public class ErrorType extends AbstractType  {
    		return "Error Type";
    	}
     @Override
+	public String getMaplName() {
+		// TODO Auto-generated method stub
+		return "error";
+	}
+    @Override
 	public int getSize() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
     // %% --------------------------------------
-
-
-	
 }

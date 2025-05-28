@@ -67,23 +67,42 @@ public class Execute extends AbstractCodeFunction {
     @Override
     public Object visit(Bloqueif bloqueif, Object param) {
         line(bloqueif);
-        String elseLabel = "else_" + labelCounter++; // Etiqueta para el bloque else
-        String endLabel = "end_if_" + labelCounter++; // Etiqueta para el final
-        value(bloqueif.getExpression()); // Evaluar la condición
-        out("jz " + elseLabel);          // Saltar al else si la condición es falsa
-        for (Statement stmt : bloqueif.getSt2()) { // Ejecutar bloque then
+
+        int currentLabel = labelCounter++;
+        String elseLabel = "else_" + currentLabel;
+        String endLabel = "end_if_" + currentLabel;
+
+        value(bloqueif.getExpression()); // Evaluar condición
+
+        if (!bloqueif.getSt3().isEmpty()) {
+            // Hay bloque else, así que saltamos a else si condición es falsa
+            out("jz " + elseLabel);
+        } else {
+            // No hay else, saltamos directamente al final
+            out("jz " + endLabel);
+        }
+
+        // Emitir bloque THEN
+        for (Statement stmt : bloqueif.getSt2()) {
             stmt.accept(this, param);
         }
-        if (!bloqueif.getSt3().isEmpty()) { // Si hay bloque else
-            out("jmp " + endLabel);         // Saltar al final después del then
+
+        if (!bloqueif.getSt3().isEmpty()) {
+            // Saltar al final después del then
+            out("jmp " + endLabel);
+            // Bloque else
+            out(elseLabel + ":");
+            for (Statement stmt : bloqueif.getSt3()) {
+                stmt.accept(this, param);
+            }
         }
-        out(elseLabel + ":");              // Inicio del bloque else
-        for (Statement stmt : bloqueif.getSt3()) { // Ejecutar bloque else
-            stmt.accept(this, param);
-        }
-        out(endLabel + ":");               // Fin del if
+
+        // Emitir etiqueta de fin solo si ha sido usada
+        out(endLabel + ":");
+
         return null;
     }
+
 
     // Sentencia LoopFrom (bucle)
     @Override
@@ -96,7 +115,7 @@ public class Execute extends AbstractCodeFunction {
         }
         out(loopLabel + ":");              // Inicio del bucle
         value(loopFrom.getExpression());   // Evaluar la condición
-        out("jz " + endLabel);             // Saltar al final si la condición es falsa
+        out("jnz " + endLabel);             // Saltar al final si la condición es falsa
         for (Statement stmt : loopFrom.getBody()) { // Ejecutar cuerpo del bucle
             stmt.accept(this, param);
         }
@@ -126,22 +145,42 @@ public class Execute extends AbstractCodeFunction {
     public Object visit(FunctionCallStatement functionCallStatement, Object param) {
         line(functionCallStatement);
         for (Expression expr : functionCallStatement.getExpressions()) {
-            value(expr);                  // Evaluar cada argumento
+            value(expr); // Evaluar argumentos
         }
-        out("call " + functionCallStatement.getName()); // Llamar a la función
+        out("call " + functionCallStatement.getName());
+
+        // Si la función tiene tipo de retorno distinto de void, hacer pop
+        FeatureSection feature = functionCallStatement.getFeatureSection();
+        if (feature != null && feature.getType().isPresent() && !(feature.getType().get() instanceof VoidType)) {
+            out("pop");
+        }
+
         return null;
     }
+
 
     // Sentencia RunStatement
     @Override
     public Object visit(RunStatement runStatement, Object param) {
         line(runStatement);
+
+        // Generar los valores de los argumentos
         for (Expression expr : runStatement.getExpressions()) {
-            value(expr);                  // Evaluar cada argumento
+            value(expr);
         }
-        out("call " + runStatement.getName()); // Llamar a la función
+
+        out("call " + runStatement.getName());
+
+        // Si la función tiene valor de retorno y no se usa, eliminarlo con pop
+        if (runStatement.getFeatureSection() != null &&
+            runStatement.getFeatureSection().getType().isPresent() &&
+            !(runStatement.getFeatureSection().getType().get() instanceof VoidType)) {
+            out("pop");
+        }
+
         return null;
     }
+
 
     // Método auxiliar para directivas de línea
     private void line(AST node) {

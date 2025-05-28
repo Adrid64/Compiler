@@ -12,7 +12,6 @@ import visitor.Visitor;
 
 // %% -------------------------------
 
-
 /*
 	relacional: expression -> exp2:expression name:string exp3:expression
 	expression -> 
@@ -135,5 +134,4 @@ public class Relacional extends AbstractExpression  {
         // Methods/attributes in this section will be preserved. Delete if not needed
 
     // %% --------------------------------------
-
 }

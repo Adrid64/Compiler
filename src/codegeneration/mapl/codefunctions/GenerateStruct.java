@@ -18,25 +18,20 @@ public class GenerateStruct extends AbstractCodeFunction {
     }
 
     // class StructDeclaration(String name, List<StructField> structFields)
+ // dentro de GenerateStruct.java
+
     @Override
     public Object visit(StructDeclaration structDeclaration, Object param) {
-        // Iniciar la directiva #TYPE con el nombre de la estructura
-        StringBuilder typeDirective = new StringBuilder("#TYPE " + structDeclaration.getName() + " : (");
-        
-        // Iterar sobre los campos de la estructura
-        for (int i = 0; i < structDeclaration.getStructFields().size(); i++) {
-            StructField field = structDeclaration.getStructFields().get(i);
-            typeDirective.append(field.getName()).append(" : ").append(field.getType().getTypeName());
-            // Añadir coma si no es el último campo
-            if (i < structDeclaration.getStructFields().size() - 1) {
-                typeDirective.append(", ");
-            }
+        // Abrimos la directiva con llaves
+        out("#TYPE " + structDeclaration.getName() + " : {");
+        // Cada campo en su propia línea
+        for (StructField field : structDeclaration.getStructFields()) {
+			out(field.getName() + ":" + field.getType().getMaplName());
         }
-        
-        typeDirective.append(")");
-        out(typeDirective.toString());
-        
+        out("}");
         return null;
     }
+
+
 
 }

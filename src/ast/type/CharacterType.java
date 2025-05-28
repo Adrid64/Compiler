@@ -82,6 +82,11 @@ public class CharacterType extends AbstractType  {
 
         // Methods/attributes in this section will be preserved. Delete if not needed
     @Override
+	public String getMaplName() {
+		// TODO Auto-generated method stub
+		return "byte";
+	}
+    @Override
 	public String getTypeName() {
 		// TODO Auto-generated method stub
 		return "char";
@@ -92,8 +97,4 @@ public class CharacterType extends AbstractType  {
 		return 1;
 	}
     // %% --------------------------------------
-
-
-
-	
 }

@@ -18,7 +18,7 @@ public class GenerateArgs extends AbstractCodeFunction {
     @Override
     public Object visit(Args args, Object param) {
         for (Arg arg : args.getArgs()) {
-            out("#PARAM " + arg.getName() + " : " + arg.getType().getTypeName());
+            out("#PARAM " + arg.getName() + " : " + arg.getType().getMaplName());
         }
         return null;
     }

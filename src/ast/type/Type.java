@@ -24,6 +24,6 @@ public interface Type extends AST {
 		String getTypeName();
 		public int getSize();
 		Type dot(String s);
+		String getMaplName();
     // %% --------------------------------------
-		
 }

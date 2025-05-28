@@ -10,35 +10,18 @@ import ast.declaration.Arg;
 import ast.declaration.Declaration;
 import ast.declaration.StructField;
 import ast.declaration.VariableDeclaration;
-import ast.expression.Arithmetic;
 import ast.expression.ArrayAcces;
-import ast.expression.BooleanExp;
-import ast.expression.Cast;
-import ast.expression.CharConstant;
 import ast.expression.FunctionCallExp;
-import ast.expression.IntLiteral;
-import ast.expression.Negacion;
-import ast.expression.Parentesis;
-import ast.expression.RealConstant;
 import ast.expression.Relacional;
-import ast.expression.RestaUnaria;
 import ast.expression.StructFieldAcces;
 import ast.expression.VariableAcces;
-import ast.statement.Assignment;
 import ast.statement.Bloqueif;
 import ast.statement.FunctionCallStatement;
-import ast.statement.LoopFrom;
-import ast.statement.Print;
-import ast.statement.Println;
-import ast.statement.Read;
-import ast.statement.Return;
 import ast.statement.RunStatement;
 import ast.statement.Statement;
 import ast.type.Arraytype;
-import ast.type.CharacterType;
-import ast.type.DoubleType;
 import ast.type.IdentType;
-import ast.type.IntType;
+import ast.type.Type;
 import main.ErrorManager;
 import visitor.DefaultVisitor;
 
@@ -120,6 +103,24 @@ public class Identification extends DefaultVisitor {
  		
  		return null;
  	}
+	
+	@Override
+	public Object visit(ArrayAcces arrayAcces, Object param) {
+	    arrayAcces.getExp2().accept(this, param);
+	    arrayAcces.getExp3().accept(this, param); // el índice
+
+	    Type baseType = arrayAcces.getExp2().getType();
+	    if (baseType instanceof Arraytype) {
+	        arrayAcces.setType(((Arraytype) baseType).getType2()); // tipo del elemento
+	    } else {
+	        predicate(false,
+	            "Acceso a array sobre un tipo no array: " + baseType,
+	            arrayAcces.end());
+	    }
+
+	    return null;
+	}
+
 
     // class Args(List<Arg> args)
 	@Override
@@ -222,7 +223,8 @@ public class Identification extends DefaultVisitor {
             functionCallStatement.setFeatureSection(features.get(functionCallStatement.getName()));
             
         }
-        System.out.println(functionCallStatement.getName()+ " , "+functionCallStatement.getFeatureSection());
+ 		//System.out.println(functionCallStatement.getFeatureSection());
+
 
         return null;
     }
@@ -269,21 +271,37 @@ public class Identification extends DefaultVisitor {
     }
 
     // class StructFieldAcces(Expression exp2, String name)
+ // class StructFieldAcces(Expression exp2, String name)
+ // class StructFieldAcces(Expression exp2, String name)
+ // class StructFieldAcces(Expression exp2, String name)
     @Override
     public Object visit(StructFieldAcces structFieldAcces, Object param) {
-        super.visit(structFieldAcces, param);
         structFieldAcces.getExp2().accept(this, param);
-        //Aqui esta el fallo
-        if (structFieldAcces.getExp2().getType() instanceof IdentType) {
-            IdentType id = (IdentType) structFieldAcces.getExp2().getType();
-            String name = id.getName();
-            StructDeclaration sd = structs.get(name);
-            if (predicate(sd != null, "No existe el struct", structFieldAcces.end())) {
-                structFieldAcces.setStructDeclaration(sd);
+
+        Type baseType = structFieldAcces.getExp2().getType();
+        StructDeclaration sd = resolveStruct(baseType);
+
+        if (predicate(sd != null,
+                      "Acceso a campo de un tipo no estructurado: " + baseType,
+                      structFieldAcces.end())) {
+            structFieldAcces.setStructDeclaration(sd);
+
+            // Asignar tipo al StructFieldAcces usando el campo accedido
+            for (StructField field : sd.getStructFields()) {
+                if (field.getName().equals(structFieldAcces.getName())) {
+                    structFieldAcces.setType(field.getType());
+                    break;
+                }
             }
         }
+
         return null;
     }
+
+
+
+
+
 
     // class Bloqueif(Expression expression, List<Statement> st2, List<Statement> st3)
     @Override
@@ -293,9 +311,17 @@ public class Identification extends DefaultVisitor {
     }
 
     // Métodos auxiliares
-    private void notifyError(String msg) {
-        errorManager.notify("Identification", msg);
+    
+    private StructDeclaration resolveStruct(Type type) {
+        while (type instanceof Arraytype) {
+            type = ((Arraytype) type).getType2(); // bajar un nivel
+        }
+        if (type instanceof IdentType) {
+            return structs.get(((IdentType) type).getName());
+        }
+        return null;
     }
+
 
     private void notifyError(String msg, Position position) {
         errorManager.notify("Identification", msg, position);

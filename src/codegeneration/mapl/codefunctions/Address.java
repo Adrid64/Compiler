@@ -15,16 +15,11 @@ public class Address extends AbstractCodeFunction {
     // class ArrayAcces(Expression exp2, Expression exp3)
     @Override
     public Object visit(ArrayAcces arrayAcces, Object param) {
-        // Dirección base del arreglo
-        address(arrayAcces.getExp2());
-        // Índice
-        value(arrayAcces.getExp3());
-        // Tamaño del elemento
-        out("pushi " + arrayAcces.getType().getSize());
-        // desplazamiento = índice * tamaño
+        address(arrayAcces.getExp2()); // base address
+        value(arrayAcces.getExp3());   // index
+        out("pushi " + arrayAcces.getType().getSize()); // element size
         out("muli");
-        // dirección final = base + desplazamiento
-        out("addi");
+        out("addi"); // final address = base + index * size
         return null;
     }
 
@@ -33,24 +28,20 @@ public class Address extends AbstractCodeFunction {
     public Object visit(VariableAcces variableAcces, Object param) {
         Declaration decl = variableAcces.getDeclaration();
 
-        if (decl instanceof VariableDeclaration) {
-            VariableDeclaration varDecl = (VariableDeclaration) decl;
+        if (decl instanceof VariableDeclaration varDecl) {
             int scope = varDecl.getScope();
             if (scope == 1) {
-                // global: pusha <absolute address>
-                out("pusha " + varDecl.getAddress());
+                out("pusha " + varDecl.getAddress()); // global
             } else if (scope == 2) {
-                // local: BP-relative
-                generateBpRelative(varDecl.getAddress());
+                generateBpRelative(varDecl.getAddress()); // local
             } else {
-                throw new IllegalStateException(
-                    "VariableDeclaration with unexpected scope: " + scope);
+                throw new IllegalStateException("Unexpected variable scope: " + scope);
             }
 
-        } else if (decl instanceof Arg) {
-            Arg arg = (Arg) decl;
-            // parámetros: BP-relative
-            generateBpRelative(arg.getAddress());
+        } else if (decl instanceof Arg arg) {
+            generateBpRelative(arg.getAddress()); // parameter
+        } else {
+            throw new IllegalStateException("Unexpected declaration type for VariableAcces");
         }
 
         return null;
@@ -59,9 +50,9 @@ public class Address extends AbstractCodeFunction {
     // class Parentesis(Expression exp2)
     @Override
     public Object visit(Parentesis parentesis, Object param) {
-        if (!parentesis.getExp2().isLvalue())
-            throw new IllegalStateException(
-                "Cannot compute address of Parentesis (inner expression is not an l-value)");
+        if (!parentesis.getExp2().isLvalue()) {
+            throw new IllegalStateException("Cannot compute address of non-lvalue in Parentesis");
+        }
         address(parentesis.getExp2());
         return null;
     }
@@ -69,9 +60,9 @@ public class Address extends AbstractCodeFunction {
     // class Cast(Type tipoCast, Expression exp2)
     @Override
     public Object visit(Cast cast, Object param) {
-        if (!cast.getExp2().isLvalue())
-            throw new IllegalStateException(
-                "Cannot compute address of Cast (inner expression is not an l-value)");
+        if (!cast.getExp2().isLvalue()) {
+            throw new IllegalStateException("Cannot compute address of non-lvalue in Cast");
+        }
         address(cast.getExp2());
         return null;
     }
@@ -79,8 +70,7 @@ public class Address extends AbstractCodeFunction {
     // class StructFieldAcces(Expression exp2, String name)
     @Override
     public Object visit(StructFieldAcces structFieldAcces, Object param) {
-        // Dirección base de la estructura
-        address(structFieldAcces.getExp2());
+        address(structFieldAcces.getExp2()); // base struct address
         StructDeclaration structDecl = structFieldAcces.getStructDeclaration();
         int offset = calculateFieldOffset(structDecl, structFieldAcces.getName());
         out("pushi " + offset);
@@ -88,10 +78,8 @@ public class Address extends AbstractCodeFunction {
         return null;
     }
 
-    // --------------------------------------------------
-    // Emite dirección BP-relative, manejando offsets positivos y negativos
+    // Emitir código para acceder a dirección relativa al BP
     private void generateBpRelative(int offset) {
-        // pusha bp
         out("pusha bp");
         if (offset >= 0) {
             out("pushi " + offset);
@@ -102,16 +90,17 @@ public class Address extends AbstractCodeFunction {
         }
     }
 
-    // Helper: calcular desplazamiento del campo en struct
+
+
+    // Cálculo de desplazamiento de un campo en una estructura
     private int calculateFieldOffset(StructDeclaration structDecl, String fieldName) {
-        int off = 0;
+        int offset = 0;
         for (StructField field : structDecl.getStructFields()) {
             if (field.getName().equals(fieldName)) {
-                return off;
+                return offset;
             }
-            off += field.getType().getSize();
+            offset += field.getType().getSize();
         }
-        throw new IllegalStateException(
-            "Field " + fieldName + " not found in struct " + structDecl.getName());
+        throw new IllegalStateException("Field '" + fieldName + "' not found in struct '" + structDecl.getName() + "'");
     }
 }

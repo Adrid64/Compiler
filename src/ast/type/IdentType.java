@@ -3,17 +3,15 @@
 package ast.type;
 
 import ast.*;
-import ast.declaration.StructField;
-
-import java.util.List;
-
 import org.antlr.v4.runtime.Token;
 import visitor.Visitor;
 
 // %% User Declarations -------------
 
     // Declarations (e.g. imports) in this section will be preserved. Delete if not needed
+import ast.declaration.StructField;
 
+import java.util.List;
 // %% -------------------------------
 
 /*
@@ -126,8 +124,12 @@ public class IdentType extends AbstractType  {
 		}
 		return size;
 	}
-    // %% --------------------------------------
-
+    @Override
+	public String getMaplName() {
+		// TODO Auto-generated method stub
+		return getName();
+	}
+    
     @Override
     public Type dot(String fieldName) {
         for (StructField field : structDeclaration.getStructFields()) {
@@ -138,5 +140,5 @@ public class IdentType extends AbstractType  {
         // Si no existe, devolvemos un ErrorType con mensaje
         return new ErrorType("El campo '" + fieldName + "' no existe en '" + name + "'");
     }
-	
+    // %% --------------------------------------
 }

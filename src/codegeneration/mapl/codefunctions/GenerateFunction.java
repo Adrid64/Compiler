@@ -4,6 +4,7 @@ import ast.*;
 import ast.declaration.Arg;
 import ast.declaration.VariableDeclaration;
 import ast.statement.Statement;
+import ast.statement.Return;
 import ast.type.*;
 import codegeneration.mapl.*;
 
@@ -17,45 +18,40 @@ public class GenerateFunction extends AbstractCodeFunction {
     // phase TypeChecking { boolean hasReturn }
     @Override
     public Object visit(FeatureSection featureSection, Object param) {
-        // Emitir directiva #FUNC
         out("#FUNC " + featureSection.getName());
 
-        // Procesar argumentos si están presentes
         if (featureSection.getArgs().isPresent()) {
             generateArgs(featureSection.getArgs().get());
         }
 
-        // Procesar tipo de retorno
         if (featureSection.getType().isPresent()) {
             out("#RET " + featureSection.getType().get().getTypeName());
         } else {
             out("#RET VOID");
         }
 
-        // Procesar variables locales si están presentes
         if (featureSection.getLocalSection().isPresent()) {
             generateLocals(featureSection.getLocalSection().get());
         }
 
-        // Emitir etiqueta de la función
         out(featureSection.getName() + ":");
 
-        // Emitir ENTER si hay variables locales
         int localsSize = featureSection.getLocalSection().isPresent()
                 ? calculateLocalsSize(featureSection.getLocalSection().get())
                 : 0;
+
         if (localsSize > 0) {
             out("ENTER " + localsSize);
         }
 
-        // Procesar sentencias
         for (Statement statement : featureSection.getStatements()) {
             execute(statement, featureSection);
         }
 
-        // Emitir instrucción RET solo si no hay return explícito
-        if (!featureSection.isHasReturn()) {
-            int returnSize = featureSection.getType().isPresent() ? featureSection.getType().get().getSize() : 0;
+        boolean isVoid = featureSection.getType().isEmpty() || featureSection.getType().get() instanceof VoidType;
+
+        if (isVoid && !endsWithReturn(featureSection)) {
+            int returnSize = 0;
             int paramsSize = featureSection.getArgs().isPresent()
                     ? calculateParamsSize(featureSection.getArgs().get())
                     : 0;
@@ -69,7 +65,7 @@ public class GenerateFunction extends AbstractCodeFunction {
     private int calculateLocalsSize(LocalSection localSection) {
         int size = 0;
         for (VariableDeclaration varDecl : localSection.getVariableDeclarations()) {
-            size += varDecl.getType().getSize();
+            size += varDecl.getIdentifiers().size() * varDecl.getType().getSize();
         }
         return size;
     }
@@ -81,5 +77,12 @@ public class GenerateFunction extends AbstractCodeFunction {
             size += arg.getType().getSize();
         }
         return size;
+    }
+
+    // Método auxiliar para comprobar si el último statement es un return explícito
+    private boolean endsWithReturn(FeatureSection feature) {
+        if (feature.getStatements().isEmpty()) return false;
+        Statement last = feature.getStatements().get(feature.getStatements().size() - 1);
+        return last instanceof Return;
     }
 }

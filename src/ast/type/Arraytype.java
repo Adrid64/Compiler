@@ -106,19 +106,22 @@ public class Arraytype extends AbstractType  {
 
         // Methods/attributes in this section will be preserved. Delete if not needed
     @Override
+	public String getMaplName() {
+		// TODO Auto-generated method stub
+		return getIntValue() + "*" + getType2().getMaplName();
+	}
+    // Methods/attributes in this section will be preserved. Delete if not needed
+    
+    @Override
     public String getTypeName() {
         return type2.getTypeName() + "[" + intValue + "]";
     }
-
     
+
     @Override
 	public int getSize() {
 		// TODO Auto-generated method stub
 		return type2.getSize()* intValue;
 	}
     // %% --------------------------------------
-
-
-
-	
 }

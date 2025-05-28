@@ -38,11 +38,10 @@ public class Value extends AbstractCodeFunction {
             // Extract the content between the quotes
             String content = literal.substring(1, literal.length() - 1);
 
-            // Handle escape sequences (e.g., '\n') or single characters (e.g., 'H')
             if (content.equals("\\n")) {
-                asciiValue = 10; // ASCII 10 for newline
+                asciiValue = 10; 
             } else if (content.length() == 1) {
-                asciiValue = content.charAt(0); // Single character (e.g., 'H' -> 72)
+                asciiValue = content.charAt(0); 
             } else {
                 throw new IllegalStateException("Invalid character literal: " + literal);
             }
@@ -50,7 +49,6 @@ public class Value extends AbstractCodeFunction {
             throw new IllegalStateException("Invalid character literal format: " + literal);
         }
 
-        // Output pushb with the ASCII value
         out("pushb " + asciiValue);
         return null;
     }
@@ -175,16 +173,27 @@ public class Value extends AbstractCodeFunction {
 
     // class Cast(Type tipoCast, Expression exp2)
     // phase TypeChecking { boolean lvalue, Type type }
+    //revisar
     @Override
     public Object visit(Cast cast, Object param) {
         value(cast.getExp2());
-        String sourceType = cast.getExp2().getType().getTypeName();
-        String targetType = cast.getTipoCast().getTypeName();
-        if (!sourceType.equals(targetType)) {
-            out("cast" + sourceType.charAt(0) + targetType.charAt(0));
-        }
+
+        String from = suffixFor(cast.getExp2().getType());
+        String to = suffixFor(cast.getType());
+
+        // Solo se aceptan las conversiones explícitas válidas
+        String instr = switch (from + "2" + to) {
+            case "i2f" -> "i2f";
+            case "f2i" -> "f2i";
+            case "b2i" -> "b2i";
+            case "i2b" -> "i2b";
+            default -> throw new IllegalArgumentException("Conversión no soportada de " + from + " a " + to);
+        };
+
+        out(instr);
         return null;
     }
+
 
     // class Arithmetic(Expression exp2, String name, Expression exp3)
     // phase TypeChecking { boolean lvalue, Type type }
@@ -212,25 +221,42 @@ public class Value extends AbstractCodeFunction {
     public Object visit(BooleanExp booleanExp, Object param) {
         value(booleanExp.getExp2());
         value(booleanExp.getExp3());
-        
-        String op = booleanExp.getName();
-        String instruction;
 
-        // Solo se aceptan operadores lógicos booleanos aquí (and/or)
+        String op = booleanExp.getName();
+        String sufijo = suffixFor(booleanExp.getExp2().getType()); // Sufijo según tipo (i, f, b)
+
         switch (op) {
             case "and":
-                instruction = "and";
+                out("and");
                 break;
             case "or":
-                instruction = "or";
+                out("or");
+                break;
+            case "=":
+                out("eq" + sufijo);
+                break;
+            case "!=":
+                out("ne" + sufijo);
+                break;
+            case "<":
+                out("lt" + sufijo);
+                break;
+            case "<=":
+                out("le" + sufijo);
+                break;
+            case ">":
+                out("gt" + sufijo);
+                break;
+            case ">=":
+                out("ge" + sufijo);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported boolean operator in BooleanExp: " + op);
         }
 
-        out(instruction); 
         return null;
     }
+
 
 
     // class StructFieldAcces(Expression exp2, String name)
