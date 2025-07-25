@@ -20,7 +20,7 @@ typesSection -> structDeclaration* ;
 varSection ->variableDeclaration*;
 
 	
-variableDeclaration:declaration -> identifiers:string* type;
+variableDeclaration:declaration -> string type;
 
 	
 structDeclaration -> string structField*;

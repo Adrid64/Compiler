@@ -64,9 +64,8 @@ public class Identification extends DefaultVisitor {
 
     @Override
     public Object visit(LocalSection localSection, Object param) {
-        // No abrir un nuevo ámbito, usar el ámbito actual de la función
         for (VariableDeclaration varDecl : localSection.getVariableDeclarations()) {
-            varDecl.accept(this, param); // Registrar cada variable local en el ámbito actual
+            varDecl.accept(this, param); 
         }
         return null;
     }
@@ -75,12 +74,12 @@ public class Identification extends DefaultVisitor {
     @Override
     public Object visit(VariableDeclaration variableDeclaration, Object param) {
         super.visit(variableDeclaration, param);
-        List<String> identifiers = variableDeclaration.getIdentifiers();
-        for (String ident : identifiers) {
-            if (predicate(variables.getFromTop(ident) == null, "La variable: " + ident + " ya existe", variableDeclaration.end())) {
-                variableDeclaration.setScope(currentScope); // Asignar scope actual
-                variables.put(ident, variableDeclaration);
-            }
+
+        String ident = variableDeclaration.getName(); 
+
+        if (predicate(variables.getFromTop(ident) == null, "La variable: " + ident + " ya existe", variableDeclaration.end())) {
+            variableDeclaration.setScope(currentScope); // Asignar scope actual
+            variables.put(ident, variableDeclaration);
         }
         return null;
     }
@@ -125,9 +124,8 @@ public class Identification extends DefaultVisitor {
     // class Args(List<Arg> args)
 	@Override
 	public Object visit(Args args, Object param) {
-	    // No abrimos ni cerramos ámbito aquí, se maneja en FeatureSection
 	    for (Arg arg : args.getArgs()) {
-	        arg.accept(this, param); // Delegar a visit(Arg) si es necesario
+	        arg.accept(this, param); 
 	    }
 	    return null;
 	}
@@ -135,7 +133,6 @@ public class Identification extends DefaultVisitor {
     // class Arg(String name, Type type)
 	@Override
 	public Object visit(Arg arg, Object param) {
-	    // El registro ya se hace en visit(FeatureSection), no necesitamos hacer nada aquí
 	    return null;
 	}
 	
@@ -167,7 +164,6 @@ public class Identification extends DefaultVisitor {
         if (predicate(variables.getFromTop(structField.getName()) == null, "El nombre del campo del struct: " + structField.getName() + " ya está definido", structField.end())) {
             variables.put(structField.getName(), structField);
             structField.setStructDeclaration((StructDeclaration) param);
-            // Opcional: structField.setScope(-1); // Valor especial para campos
         }
         super.visit(structField, param);
         return null;
@@ -223,7 +219,6 @@ public class Identification extends DefaultVisitor {
             functionCallStatement.setFeatureSection(features.get(functionCallStatement.getName()));
             
         }
- 		//System.out.println(functionCallStatement.getFeatureSection());
 
 
         return null;

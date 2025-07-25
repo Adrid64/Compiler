@@ -135,7 +135,7 @@ public class MemoryAllocation extends DefaultVisitor {
 		return null;
 	}
 
-	// class VariableDeclaration(List<String> identifiers, Type type)
+	// class VariableDeclaration(String name, Type type)
 	// phase MemoryAllocation { int address }
 	@Override
 	public Object visit(VariableDeclaration variableDeclaration, Object param) {

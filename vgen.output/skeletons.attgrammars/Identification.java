@@ -130,7 +130,7 @@ public class Identification extends DefaultVisitor {
 		return null;
 	}
 
-	// class VariableDeclaration(List<String> identifiers, Type type)
+	// class VariableDeclaration(String name, Type type)
 	@Override
 	public Object visit(VariableDeclaration variableDeclaration, Object param) {
 

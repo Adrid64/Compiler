@@ -376,7 +376,7 @@ public class GrammarParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class VarSectionContext extends ParserRuleContext {
 		public VarSection ast;
-		public List<VariableDeclaration> list = new ArrayList<VariableDeclaration>();
+		public List<VariableDeclaration> allVarDecls = new ArrayList<VariableDeclaration>();
 		public VariableDeclarationContext variableDeclaration;
 		public List<VariableDeclarationContext> variableDeclaration() {
 			return getRuleContexts(VariableDeclarationContext.class);
@@ -407,14 +407,14 @@ public class GrammarParser extends Parser {
 				{
 				setState(79);
 				((VarSectionContext)_localctx).variableDeclaration = variableDeclaration();
-				 _localctx.list.add(((VarSectionContext)_localctx).variableDeclaration.ast); 
+				 _localctx.allVarDecls.addAll(((VarSectionContext)_localctx).variableDeclaration.ast); 
 				}
 				}
 				setState(86);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			 ((VarSectionContext)_localctx).ast =  new VarSection(_localctx.list); 
+			 ((VarSectionContext)_localctx).ast =  new VarSection(_localctx.allVarDecls); 
 			}
 		}
 		catch (RecognitionException re) {
@@ -430,8 +430,8 @@ public class GrammarParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class VariableDeclarationContext extends ParserRuleContext {
-		public VariableDeclaration ast;
-		public List<Token> list = new ArrayList<Token>();
+		public List<VariableDeclaration> ast = new ArrayList<VariableDeclaration>();
+		public List<Token> idTokens = new ArrayList<Token>();
 		public Token IDENT;
 		public TypeContext type;
 		public List<TerminalNode> IDENT() { return getTokens(GrammarParser.IDENT); }
@@ -456,7 +456,7 @@ public class GrammarParser extends Parser {
 			{
 			setState(89);
 			((VariableDeclarationContext)_localctx).IDENT = match(IDENT);
-			_localctx.list.add(((VariableDeclarationContext)_localctx).IDENT);
+			 _localctx.idTokens.add(((VariableDeclarationContext)_localctx).IDENT); 
 			setState(96);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -467,7 +467,7 @@ public class GrammarParser extends Parser {
 				match(T__6);
 				setState(92);
 				((VariableDeclarationContext)_localctx).IDENT = match(IDENT);
-				_localctx.list.add(((VariableDeclarationContext)_localctx).IDENT);
+				 _localctx.idTokens.add(((VariableDeclarationContext)_localctx).IDENT); 
 				}
 				}
 				setState(98);
@@ -480,7 +480,10 @@ public class GrammarParser extends Parser {
 			((VariableDeclarationContext)_localctx).type = type();
 			setState(101);
 			match(T__1);
-			 ((VariableDeclarationContext)_localctx).ast =  new VariableDeclaration(_localctx.list, ((VariableDeclarationContext)_localctx).type.ast);
+
+			        for (Token idToken : _localctx.idTokens) {
+			            _localctx.ast.add(new VariableDeclaration(idToken, ((VariableDeclarationContext)_localctx).type.ast));
+			        }
 			    
 			}
 		}
@@ -874,7 +877,7 @@ public class GrammarParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class LocalSectionContext extends ParserRuleContext {
 		public LocalSection ast;
-		public List<VariableDeclaration> list = new ArrayList<VariableDeclaration>();
+		public List<VariableDeclaration> allVarDecls = new ArrayList<VariableDeclaration>();
 		public VariableDeclarationContext variableDeclaration;
 		public List<VariableDeclarationContext> variableDeclaration() {
 			return getRuleContexts(VariableDeclarationContext.class);
@@ -905,14 +908,14 @@ public class GrammarParser extends Parser {
 				{
 				setState(181);
 				((LocalSectionContext)_localctx).variableDeclaration = variableDeclaration();
-				 _localctx.list.add(((LocalSectionContext)_localctx).variableDeclaration.ast); 
+				 _localctx.allVarDecls.addAll(((LocalSectionContext)_localctx).variableDeclaration.ast); 
 				}
 				}
 				setState(188);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			((LocalSectionContext)_localctx).ast =  new LocalSection(_localctx.list);
+			((LocalSectionContext)_localctx).ast =  new LocalSection(_localctx.allVarDecls);
 				
 			}
 		}

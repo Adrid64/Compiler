@@ -87,7 +87,7 @@ AbstractAST <|-[#808080]- VarSection
 VarSection o-[#404040,thickness=2]- "✱" VariableDeclaration : variableDeclarations >
 
 class VariableDeclaration {
-	+List<String> identifiers
+	+String name
 	..<color:#669900> MemoryAllocation </color>..
 	+<color:#669900>int address</color>
 }

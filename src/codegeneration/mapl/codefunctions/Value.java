@@ -89,10 +89,14 @@ public class Value extends AbstractCodeFunction {
     // phase TypeChecking { boolean lvalue, Type type }
     @Override
     public Object visit(RestaUnaria restaUnaria, Object param) {
-        value(restaUnaria.getExp2());
-        out("neg", restaUnaria.getType());
-        return null;
+       value(restaUnaria.getExp2());
+       out("pushi" + -1);
+       out("mul"+suffixFor(restaUnaria.getType()));
+       return null;
+       
     }
+  
+  
 
     // class Parentesis(Expression exp2)
     // phase TypeChecking { boolean lvalue, Type type }
@@ -124,10 +128,10 @@ public class Value extends AbstractCodeFunction {
                 case ">=":
                     out("gef"); // Greater than or equal (float)
                     break;
-                case "==":
+                case "=":
                     out("eqf"); // Equal (float)
                     break;
-                case "!=":
+                case "<>":
                     out("nef"); // Not equal (float)
                     break;
                 default:
@@ -147,10 +151,10 @@ public class Value extends AbstractCodeFunction {
                 case ">=":
                     out("gei"); // Greater than or equal (integer)
                     break;
-                case "==":
+                case "=":
                     out("eqi"); // Equal (integer)
                     break;
-                case "!=":
+                case "<>":
                     out("nei"); // Not equal (integer)
                     break;
                 default:
@@ -170,6 +174,7 @@ public class Value extends AbstractCodeFunction {
         out("not");
         return null;
     }
+    
 
     // class Cast(Type tipoCast, Expression exp2)
     // phase TypeChecking { boolean lvalue, Type type }
@@ -194,6 +199,7 @@ public class Value extends AbstractCodeFunction {
         return null;
     }
 
+   
 
     // class Arithmetic(Expression exp2, String name, Expression exp3)
     // phase TypeChecking { boolean lvalue, Type type }
@@ -223,7 +229,7 @@ public class Value extends AbstractCodeFunction {
         value(booleanExp.getExp3());
 
         String op = booleanExp.getName();
-        String sufijo = suffixFor(booleanExp.getExp2().getType()); // Sufijo según tipo (i, f, b)
+        String sufijo = suffixFor(booleanExp.getExp2().getType());
 
         switch (op) {
             case "and":

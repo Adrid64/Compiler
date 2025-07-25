@@ -78,7 +78,6 @@ public class Address extends AbstractCodeFunction {
         return null;
     }
 
-    // Emitir código para acceder a dirección relativa al BP
     private void generateBpRelative(int offset) {
         out("pusha bp");
         if (offset >= 0) {

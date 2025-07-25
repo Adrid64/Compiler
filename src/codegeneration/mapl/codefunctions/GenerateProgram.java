@@ -15,12 +15,10 @@ public class GenerateProgram extends AbstractCodeFunction {
     public Object visit(Program program, Object param) {
         out("\n#SOURCE\t" + "\"" + getSpecification().getSourceFile() + "\"\n");
         
-        // Punto de entrada del programa
         out("' Programa principal");
         execute(program.getRunStatement());
         out("halt");
         
-        // Generar la clase y sus funciones después
         generateClass(program.getClassDeclaration());
         
         return null;

@@ -49,7 +49,7 @@ varSection returns[VarSection ast]
 	;
 
 variableDeclaration returns[VariableDeclaration ast]
-    : identifiers+=IDENT* type            { $ast = new VariableDeclaration($identifiers, $type.ast); }
+    : name=IDENT type                     { $ast = new VariableDeclaration($name, $type.ast); }  
 	;
 
 createSection returns[CreateSection ast]

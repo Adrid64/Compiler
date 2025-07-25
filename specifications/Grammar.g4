@@ -36,19 +36,22 @@ typesSection returns[TypesSection ast]
 	;
 
 varSection returns[VarSection ast]
-	locals[List<VariableDeclaration> list= new ArrayList<VariableDeclaration>()]
-	
-	:'vars' (variableDeclaration { $list.add($variableDeclaration.ast); })* { $ast = new VarSection($list); }
-	;
-	
-variableDeclaration returns[VariableDeclaration ast]
-	locals[List<Token> list= new ArrayList<Token>()]
+	locals[List<VariableDeclaration> allVarDecls = new ArrayList<VariableDeclaration>()] 
 
-    : IDENT{$list.add($IDENT);} (',' IDENT{$list.add($IDENT);})* ':' type ';'
-    { $ast = new VariableDeclaration($list, $type.ast);
+	:'vars' (variableDeclaration { $allVarDecls.addAll($variableDeclaration.ast); })* { $ast = new VarSection($allVarDecls); } 
+;
+	
+variableDeclaration returns[List<VariableDeclaration> ast = new ArrayList<VariableDeclaration>()]
+    locals[List<Token> idTokens = new ArrayList<Token>()]
+    : IDENT { $idTokens.add($IDENT); } 
+    (',' IDENT { $idTokens.add($IDENT); })*
+    ':' type ';'
+    {
+        for (Token idToken : $idTokens) {
+            $ast.add(new VariableDeclaration(idToken, $type.ast));
+        }
     }
 ;
-
 	
 structDeclaration returns[StructDeclaration ast]
 	locals[List<StructField> list= new ArrayList<StructField>()]
@@ -90,12 +93,12 @@ arg returns [Arg ast]
     ;
 	
 localSection returns[LocalSection ast]
-	locals[List<VariableDeclaration> list= new ArrayList<VariableDeclaration>()]
-	
-	: 'local' (variableDeclaration { $list.add($variableDeclaration.ast); })*
-	{$ast= new LocalSection($list);
+	locals[List<VariableDeclaration> allVarDecls = new ArrayList<VariableDeclaration>()] 
+
+	: 'local' (variableDeclaration { $allVarDecls.addAll($variableDeclaration.ast); })*
+	{$ast= new LocalSection($allVarDecls);
 	}
-	;
+;
 	
 
     	

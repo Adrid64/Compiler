@@ -35,8 +35,6 @@ public class TypeChecking extends DefaultVisitor {
     // # ----------------------------------------------------------
     /*
     * Implement visit methods here.
-    * COMPROBAR QUE NO DECLARO VARIABLES TIPO VOID
-    * VER QUE ES UN LVALUE EL LADO IZQUIERDO DEL ARRAYACCES
     */
     
  // class Program(ClassDeclaration classDeclaration, RunStatement runStatement)
@@ -732,11 +730,9 @@ public class TypeChecking extends DefaultVisitor {
  // En codegeneration/mapl/codefunctions/TypeChecking.java (o donde esté tu visitor)
  	@Override
  	public Object visit(StructFieldAcces structFieldAcces, Object param) {
- 	    // 1) Procesamos primero el subárbol
  	    super.visit(structFieldAcces, param);
 
  	    Type exp2Type = structFieldAcces.getExp2().getType();
- 	    // 3) Llamamos a dot() en ese tipo
  	    structFieldAcces.setType(exp2Type.dot(structFieldAcces.getName()));
 	        structFieldAcces.setLvalue(true);
 

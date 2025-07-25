@@ -16,9 +16,10 @@ public class Declare extends AbstractCodeFunction {
     public Object visit(VariableDeclaration variableDeclaration, Object param) {
         int scope = variableDeclaration.getScope();
         String directive = (scope == 0) ? "#GLOBAL" : "#LOCAL";
-        for (String identifier : variableDeclaration.getIdentifiers()) {
-            out(directive + " " + identifier + " : " + variableDeclaration.getType().getMaplName());
-        }
+        String identifierName = variableDeclaration.getName();
+
+        out(directive + " " + identifierName + " : " + variableDeclaration.getType().getMaplName());
+
         return null;
     }
 
@@ -27,7 +28,6 @@ public class Declare extends AbstractCodeFunction {
     // phase MemoryAllocation { int address }
     @Override
     public Object visit(StructField structField, Object param) {
-        // No se emite ninguna directiva; los campos se manejan en #TYPE en GenerateStruct
         return null;
     }
 

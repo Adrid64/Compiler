@@ -65,21 +65,19 @@ public class MemoryAllocation extends DefaultVisitor {
    	}
 
    	// class VarSection(List<VariableDeclaration> variableDeclarations)
+ // class VarSection(List<VariableDeclaration> variableDeclarations)
    	@Override
    	public Object visit(VarSection varSection, Object param) {
-   		int address = 0;
-   		for (VariableDeclaration variableDeclaration : varSection.getVariableDeclarations()) {
-   		    for (String name : variableDeclaration.getIdentifiers()) {
-   		        variableDeclaration.setAddress(address);
-   		        address += variableDeclaration.getType().getSize();
-   		    }
-   		}
+   	    int address = 0; 
 
+   	    for (VariableDeclaration variableDeclaration : varSection.getVariableDeclarations()) {
+   	        variableDeclaration.setAddress(address);
+   	        address += variableDeclaration.getType().getSize();
+   	    }
 
-   		// varSection.getVariableDeclarations().forEach(variableDeclaration -> variableDeclaration.accept(this, param));
-   		super.visit(varSection, param);
+   	    super.visit(varSection, param);
 
-   		return null;
+   	    return null;
    	}
 
    	// class VariableDeclaration(List<String> identifiers, Type type)
@@ -144,15 +142,14 @@ public class MemoryAllocation extends DefaultVisitor {
    	}
 
    	// class LocalSection(List<VariableDeclaration> variableDeclarations)
+ // class LocalSection(List<VariableDeclaration> variableDeclarations)
    	@Override
    	public Object visit(LocalSection localSection, Object param) {
-   	    int offset = 0;
+   	    int offset = 0; 
+
    	    for (VariableDeclaration decl : localSection.getVariableDeclarations()) {
-   	        for (String id : decl.getIdentifiers()) {
-   	            offset -= decl.getType().getSize();
-   	            // crea una nueva VariableDeclaration por identificador si es necesario
-   	            decl.setAddress(offset);
-   	        }
+   	        offset -= decl.getType().getSize();
+   	        decl.setAddress(offset); 
    	    }
    	    super.visit(localSection, param);
    	    return null;
@@ -169,7 +166,6 @@ public class MemoryAllocation extends DefaultVisitor {
 			argsList.get(i).setAddress(address);
 			address += argsList.get(i).getType().getSize();
 		}
-   		// args.getArgs().forEach(arg -> arg.accept(this, param));
    		
 
    		return null;

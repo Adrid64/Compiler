@@ -11,7 +11,7 @@ import codegeneration.mapl.*;
 
 public class Execute extends AbstractCodeFunction {
 
-    private int labelCounter = 0; // Contador para etiquetas únicas en estructuras de control
+    private int labelCounter = 0;
 
     public Execute(MaplCodeSpecification specification) {
         super(specification);
@@ -75,10 +75,8 @@ public class Execute extends AbstractCodeFunction {
         value(bloqueif.getExpression()); // Evaluar condición
 
         if (!bloqueif.getSt3().isEmpty()) {
-            // Hay bloque else, así que saltamos a else si condición es falsa
             out("jz " + elseLabel);
         } else {
-            // No hay else, saltamos directamente al final
             out("jz " + endLabel);
         }
 
@@ -125,19 +123,15 @@ public class Execute extends AbstractCodeFunction {
     }
 
     // Sentencia Return
+
     @Override
     public Object visit(Return returnValue, Object param) {
         line(returnValue);
-        FeatureSection feature = (FeatureSection) param; // Sección de la función actual
+
         if (returnValue.getExpression() != null) {
-            value(returnValue.getExpression()); // Evaluar el valor de retorno
+            value(returnValue.getExpression());
         }
-        // Calcular tamaños para la instrucción ret, manejando parámetros opcionales
-        int returnSize = feature.getType().isPresent() ? feature.getType().get().getSize() : 0;
-        int localsSize = feature.getLocalSection().isPresent() ? calculateLocalsSize(feature.getLocalSection().get()) : 0;
-        int paramsSize = feature.getArgs().isPresent() ? calculateParamsSize(feature.getArgs().get()) : 0;
-        out("ret " + returnSize + ", " + localsSize + ", " + paramsSize); // Retornar
-        return null;
+        return null; 
     }
 
     // Sentencia FunctionCallStatement
@@ -189,23 +183,8 @@ public class Execute extends AbstractCodeFunction {
         }
     }
 
-    // Método auxiliar para calcular el tamaño de las variables locales
-    private int calculateLocalsSize(LocalSection localSection) {
-        int size = 0;
-        for (VariableDeclaration varDecl : localSection.getVariableDeclarations()) {
-            size += varDecl.getType().getSize();
-        }
-        return size;
-    }
 
-    // Método auxiliar para calcular el tamaño de los parámetros
-    private int calculateParamsSize(Args args) {
-        int size = 0;
-        for (Arg arg : args.getArgs()) {
-            size += arg.getType().getSize();
-        }
-        return size;
-    }
+  
 
     // Método auxiliar para emitir instrucción con sufijo según el tipo
     private void out(String instruction, Type type) {

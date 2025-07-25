@@ -2,17 +2,9 @@ package codegeneration.mapl.codefunctions;
 
 import ast.*;
 import ast.declaration.VariableDeclaration;
-import ast.type.Arraytype;
-import ast.type.CharacterType;
-import ast.type.DoubleType;
-import ast.type.IdentType;
-import ast.type.IntType;
-import ast.type.Type;
-import ast.type.VoidType;
 import codegeneration.mapl.*;
-public class GenerateVars extends AbstractCodeFunction {
 
-    private int nextGlobalAddress = 0;
+public class GenerateVars extends AbstractCodeFunction {
 
     public GenerateVars(MaplCodeSpecification specification) {
         super(specification);
@@ -21,19 +13,12 @@ public class GenerateVars extends AbstractCodeFunction {
     @Override
     public Object visit(VarSection varSection, Object param) {
         for (VariableDeclaration varDecl : varSection.getVariableDeclarations()) {
-            for (String identifier : varDecl.getIdentifiers()) {
-                out("#GLOBAL " + identifier + " : " + varDecl.getType().getMaplName());
-                varDecl.setAddress(nextGlobalAddress);
-                nextGlobalAddress += varDecl.getType().getSize();
-            }
+
+            String identifierName = varDecl.getName();
+            out("#GLOBAL " + identifierName + " : " + varDecl.getType().getMaplName());
+
+    
         }
         return null;
     }
 }
-
-
-
-
-
-    
-    

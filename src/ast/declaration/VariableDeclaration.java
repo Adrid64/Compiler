@@ -3,9 +3,6 @@
 package ast.declaration;
 
 import ast.type.*;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.stream.Stream;
 import org.antlr.v4.runtime.Token;
 import visitor.Visitor;
 
@@ -16,7 +13,7 @@ import visitor.Visitor;
 // %% -------------------------------
 
 /*
-	variableDeclaration: declaration -> identifiers:string* type:type
+	variableDeclaration: declaration -> name:string type:type
 	declaration -> 
 	
 	PHASE MemoryAllocation
@@ -27,8 +24,8 @@ public class VariableDeclaration extends AbstractDeclaration  {
     // ----------------------------------
     // Instance Variables
 
-	// variableDeclaration: declaration -> identifiers:string* type
-	private List<String> identifiers;
+	// variableDeclaration: declaration -> string type
+	private String name;
 	private Type type;
 
     // PHASE MemoryAllocation
@@ -37,54 +34,49 @@ public class VariableDeclaration extends AbstractDeclaration  {
     // ----------------------------------
     // Constructors
 
-	public VariableDeclaration(List<String> identifiers, Type type) {
+	public VariableDeclaration(String name, Type type) {
 		super();
 
-		if (identifiers == null)
-			identifiers = new ArrayList<>();
-		this.identifiers = identifiers;
+		if (name == null)
+			throw new IllegalArgumentException("Parameter 'name' can't be null. Pass a non-null value or use 'string?' in the abstract grammar");
+		this.name = name;
 
 		if (type == null)
 			throw new IllegalArgumentException("Parameter 'type' can't be null. Pass a non-null value or use 'type?' in the abstract grammar");
 		this.type = type;
 
-		updatePositions(identifiers, type);
+		updatePositions(name, type);
 	}
 
-	public VariableDeclaration(Object identifiers, Object type) {
+	public VariableDeclaration(Object name, Object type) {
 		super();
 
-        this.identifiers = castList(identifiers,
-            unwrapIfContext
-            .andThen(unwrapIfToken)
-            .andThen(String.class::cast));
+        if (name == null)
+            throw new IllegalArgumentException("Parameter 'name' can't be null. Pass a non-null value or use 'string?' in the abstract grammar");
+		this.name = (name instanceof Token) ? ((Token) name).getText() : (String) name;
 
         if (type == null)
             throw new IllegalArgumentException("Parameter 'type' can't be null. Pass a non-null value or use 'type?' in the abstract grammar");
 		this.type = (Type) type;
 
-		updatePositions(identifiers, type);
+		updatePositions(name, type);
 	}
 
 
     // ----------------------------------
-    // variableDeclaration: declaration -> identifiers:string* type
+    // variableDeclaration: declaration -> string type
 
-	// Child 'identifiers:string*' 
+	// Child 'string' 
 
-	public void setIdentifiers(List<String> identifiers) {
-		if (identifiers == null)
-			identifiers = new ArrayList<>();
-		this.identifiers = identifiers;
+	public void setName(String name) {
+		if (name == null)
+			throw new IllegalArgumentException("Parameter 'name' can't be null. Pass a non-null value or use 'string?' in the abstract grammar");
+		this.name = name;
 
 	}
 
-    public List<String> getIdentifiers() {
-        return identifiers;
-    }
-
-    public Stream<String> identifiers() {
-        return identifiers.stream();
+    public String getName() {
+        return name;
     }
 
 
@@ -128,7 +120,7 @@ public class VariableDeclaration extends AbstractDeclaration  {
 
     @Override
     public String toString() {
-        return "VariableDeclaration{" + " identifiers=" + this.getIdentifiers() + " type=" + this.getType() + "}";
+        return "VariableDeclaration{" + " name=" + this.getName() + " type=" + this.getType() + "}";
     }
 
 

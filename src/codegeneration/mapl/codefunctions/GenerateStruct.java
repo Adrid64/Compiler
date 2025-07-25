@@ -18,11 +18,9 @@ public class GenerateStruct extends AbstractCodeFunction {
     }
 
     // class StructDeclaration(String name, List<StructField> structFields)
- // dentro de GenerateStruct.java
 
     @Override
     public Object visit(StructDeclaration structDeclaration, Object param) {
-        // Abrimos la directiva con llaves
         out("#TYPE " + structDeclaration.getName() + " : {");
         // Cada campo en su propia línea
         for (StructField field : structDeclaration.getStructFields()) {
